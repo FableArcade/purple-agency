@@ -196,6 +196,7 @@ export function Component() {
         mobileBg.style.backgroundImage = `url(${SLIDES[slideIdx].media})`;
         mobileBg.style.opacity = "1";
         mobileBg.style.transform = "scale(1)";
+        zoomLastY = window.scrollY;
       };
 
       // Scroll-driven zoom parallax
