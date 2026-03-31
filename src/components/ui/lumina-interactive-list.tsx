@@ -166,7 +166,7 @@ export function Component() {
           uTex1Size: { value: new THREE.Vector2(1, 1) },
           uTex2Size: { value: new THREE.Vector2(1, 1) },
           uMouse: { value: new THREE.Vector2(0, 0) },
-          uMobile: { value: isMobile ? 1.0 : 0.0 },
+          uMobile: { value: 0.0 },
         },
         vertexShader: vertSrc, fragmentShader: fragSrc,
       });
