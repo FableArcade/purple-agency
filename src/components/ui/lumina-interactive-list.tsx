@@ -247,7 +247,7 @@ export function Component() {
       // Initial state
       if (isMobile) {
         showMobileBg(0);
-        canvasEl.style.display = "none"; // No WebGL on mobile at all
+        canvasEl.style.opacity = "0";
       } else {
         renderer.render(scene, camera);
         animating = true;
@@ -273,32 +273,33 @@ export function Component() {
         }, duration * 400);
 
         if (isMobile) {
-          // MOBILE: pure CSS crossfade
-          if (mobileBgNext) {
-            // Reset next layer instantly (no transition)
-            mobileBgNext.style.transition = "none";
-            mobileBgNext.style.opacity = "0";
-            mobileBgNext.style.backgroundImage = `url(${SLIDES[idx].media})`;
-            mobileBgNext.style.transform = "scale(1)";
+          // MOBILE: show canvas for ripple, then swap back to CSS bg
+          if (!textures[idx]) { isAnimating = false; return; }
 
-            // Force reflow then fade in
-            void mobileBgNext.offsetHeight;
-            mobileBgNext.style.transition = "opacity 1s ease";
-            mobileBgNext.style.opacity = "1";
-          }
-          setTimeout(() => {
-            // Swap: set base layer to new image, hide next layer instantly
-            if (mobileBg) {
-              mobileBg.style.backgroundImage = `url(${SLIDES[idx].media})`;
-              mobileBg.style.transform = "scale(1)";
-            }
-            if (mobileBgNext) {
-              mobileBgNext.style.transition = "none";
-              mobileBgNext.style.opacity = "0";
-            }
-            currentSlide = idx;
-            isAnimating = false;
-          }, 1100);
+          shaderMat.uniforms.uDirection.value = idx > currentSlide ? 1 : -1;
+          shaderMat.uniforms.uTex1.value = textures[currentSlide];
+          shaderMat.uniforms.uTex1Size.value = textures[currentSlide].userData.size;
+          shaderMat.uniforms.uTex2.value = textures[idx];
+          shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
+
+          // Show canvas on top
+          canvasEl.style.opacity = "1";
+          startRenderLoop();
+
+          gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
+            value: 1, duration, ease: "power2.inOut",
+            onComplete: () => {
+              // Swap CSS bg to new image, hide canvas
+              shaderMat.uniforms.uProgress.value = 0;
+              shaderMat.uniforms.uTex1.value = textures[idx];
+              shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
+              showMobileBg(idx);
+              canvasEl.style.opacity = "0";
+              stopRenderLoop();
+              currentSlide = idx;
+              isAnimating = false;
+            },
+          });
         } else {
           // DESKTOP: WebGL ripple transition
           if (!textures[idx]) return;
