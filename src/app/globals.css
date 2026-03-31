@@ -462,6 +462,7 @@
   margin: 0 0 1.5rem 0;
   line-height: 1.1;
   white-space: nowrap;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
 }
 
 .scroll-section-text {
@@ -469,9 +470,10 @@
   font-size: clamp(1rem, 1.4vw, 1.2rem);
   font-weight: 300;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.65);
   margin: 0;
   white-space: pre-line;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
 }
 
 .slide-number {
@@ -515,9 +517,10 @@
   font-size: clamp(0.8rem, 1.2vw, 1rem);
   font-weight: 300;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.6);
   margin: 0;
   white-space: nowrap;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
 }
 
 .slides-navigation {
@@ -573,6 +576,7 @@
   color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* ===== Mobile Responsive ===== */
