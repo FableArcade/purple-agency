@@ -289,13 +289,13 @@ export function Component() {
           shaderMat.uniforms.uTex2.value = textures[idx];
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
-          // Show canvas at same zoom level as the CSS bg
+          // Canvas overlays on top — CSS bg stays visible underneath
+          const savedZoom = zoomScaleCurrent;
           canvasEl.style.display = "block";
-          canvasEl.style.transform = `scale(${zoomScaleCurrent})`;
-          renderer.render(scene, camera);
+          canvasEl.style.transform = `scale(${savedZoom})`;
           canvasEl.style.transition = "none";
           canvasEl.style.opacity = "1";
-          mobileBg.style.opacity = "0";
+          renderer.render(scene, camera);
           startRenderLoop();
 
           gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
@@ -304,23 +304,28 @@ export function Component() {
               shaderMat.uniforms.uProgress.value = 0;
               shaderMat.uniforms.uTex1.value = textures[idx];
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
-              // Swap to CSS bg at current zoom, then ease back to 1
-              showMobileBg(idx);
-              mobileBg.style.transform = `scale(${zoomScaleCurrent})`;
-              mobileBg.style.transition = "transform 0.5s ease-out";
-              zoomScaleTarget = 1;
-              zoomScaleCurrent = 1;
-              setTimeout(() => {
-                mobileBg.style.transform = "scale(1)";
-                mobileBg.style.transition = "";
-              }, 50);
-              canvasEl.style.transition = "none";
-              canvasEl.style.opacity = "0";
-              canvasEl.style.display = "none";
-              canvasEl.style.transform = "";
-              stopRenderLoop();
+
+              // Update CSS bg to new image FIRST (underneath canvas)
+              mobileBg.style.backgroundImage = `url(${SLIDES[idx].media})`;
+              mobileBg.style.transform = `scale(${savedZoom})`;
+              mobileBg.style.opacity = "1";
+
+              // Wait a frame for CSS bg to paint, then hide canvas
+              requestAnimationFrame(() => {
+                canvasEl.style.transition = "none";
+                canvasEl.style.opacity = "0";
+                canvasEl.style.display = "none";
+                canvasEl.style.transform = "";
+                stopRenderLoop();
+
+                // Ease zoom back to 1
+                zoomScaleTarget = 1;
+                zoomScaleCurrent = savedZoom;
+              });
+
               currentSlide = idx;
               isAnimating = false;
+              zoomLastY = window.scrollY;
             },
           });
         } else {
