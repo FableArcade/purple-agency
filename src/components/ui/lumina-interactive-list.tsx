@@ -301,29 +301,39 @@ export function Component() {
 
       // --- GYROSCOPE (mobile) ---
       const handleOrientation = (e: DeviceOrientationEvent) => {
-        const gamma = e.gamma || 0; // left/right tilt (-90 to 90)
-        const beta = e.beta || 0;   // front/back tilt (-180 to 180)
-        mouse.x = Math.max(-1, Math.min(1, gamma / 30));
-        mouse.y = Math.max(-1, Math.min(1, (beta - 45) / 30));
+        const gamma = e.gamma || 0;
+        const beta = e.beta || 0;
+        mouse.x = Math.max(-1, Math.min(1, gamma / 20));
+        mouse.y = Math.max(-1, Math.min(1, (beta - 60) / 20));
       };
 
-      // iOS 13+ requires permission request
-      if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
-        // Will be triggered on first user tap
-        const requestGyro = () => {
+      const enableGyro = () => {
+        if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
           (DeviceOrientationEvent as any).requestPermission()
             .then((state: string) => {
               if (state === "granted") {
                 window.addEventListener("deviceorientation", handleOrientation);
               }
             })
-            .catch(console.warn);
-          window.removeEventListener("touchstart", requestGyro);
-        };
-        window.addEventListener("touchstart", requestGyro, { once: true });
-      } else {
-        window.addEventListener("deviceorientation", handleOrientation);
+            .catch(() => {});
+        } else if ("DeviceOrientationEvent" in window) {
+          window.addEventListener("deviceorientation", handleOrientation);
+        }
+      };
+
+      // Try immediately for Android / non-Safari
+      if (typeof (DeviceOrientationEvent as any).requestPermission !== "function") {
+        enableGyro();
       }
+
+      // For iOS Safari — attach to every touch/click event until granted
+      const tryGyroOnInteraction = () => {
+        enableGyro();
+        window.removeEventListener("touchstart", tryGyroOnInteraction);
+        window.removeEventListener("click", tryGyroOnInteraction);
+      };
+      window.addEventListener("touchstart", tryGyroOnInteraction, { once: true });
+      window.addEventListener("click", tryGyroOnInteraction, { once: true });
 
       // --- RESIZE ---
       window.addEventListener("resize", () => {
