@@ -182,7 +182,29 @@ export function Component() {
 
       const canvasEl = canvas;
 
-      // No zoom — keep canvas at scale(1) always
+      // Scroll-driven zoom via CSS transform on canvas
+      let zoomScale = 1;
+      let zoomLastY = window.scrollY;
+
+      const onZoomScroll = () => {
+        if (isAnimating || locked) return;
+        const delta = window.scrollY - zoomLastY;
+        zoomLastY = window.scrollY;
+        if (Math.abs(delta) > 2) {
+          zoomScale = Math.min(1.03, zoomScale + Math.abs(delta) * 0.0003);
+        }
+      };
+      window.addEventListener("scroll", onZoomScroll, { passive: true });
+
+      const zoomTick = () => {
+        requestAnimationFrame(zoomTick);
+        zoomScale += (1.0 - zoomScale) * 0.06;
+        if (zoomScale < 1.001) zoomScale = 1;
+        if (!isAnimating) {
+          canvasEl.style.transform = `scale(${zoomScale})`;
+        }
+      };
+      zoomTick();
 
       // --- RENDER ---
       let animating = false;
@@ -237,6 +259,8 @@ export function Component() {
           shaderMat.uniforms.uTex2.value = textures[idx];
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
+          zoomScale = 1;
+          canvasEl.style.transform = "scale(1)";
           startRenderLoop();
 
           gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
@@ -245,11 +269,11 @@ export function Component() {
               shaderMat.uniforms.uProgress.value = 0;
               shaderMat.uniforms.uTex1.value = textures[idx];
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
-              // Render final frame and stop loop
               renderer.render(scene, camera);
               stopRenderLoop();
               currentSlide = idx;
               isAnimating = false;
+              zoomLastY = window.scrollY;
             },
           });
         } else {
