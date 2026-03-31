@@ -62,35 +62,8 @@ const SLIDES = [
 export function Component() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [gyroEnabled, setGyroEnabled] = useState(false);
-  const gyroMouseRef = useRef({ x: 0, y: 0 });
   const setActiveSlideRef = useRef(setActiveSlide);
   setActiveSlideRef.current = setActiveSlide;
-
-  // iOS gyro permission must be in a direct click handler
-  const requestGyro = () => {
-    if (gyroEnabled) return;
-    const handler = (e: DeviceOrientationEvent) => {
-      const gamma = e.gamma || 0;
-      const beta = e.beta || 0;
-      gyroMouseRef.current.x = Math.max(-1, Math.min(1, gamma / 20));
-      gyroMouseRef.current.y = Math.max(-1, Math.min(1, (beta - 60) / 20));
-    };
-
-    if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
-      (DeviceOrientationEvent as any).requestPermission()
-        .then((state: string) => {
-          if (state === "granted") {
-            window.addEventListener("deviceorientation", handler);
-            setGyroEnabled(true);
-          }
-        })
-        .catch(() => {});
-    } else if ("DeviceOrientationEvent" in window) {
-      window.addEventListener("deviceorientation", handler);
-      setGyroEnabled(true);
-    }
-  };
 
   useEffect(() => {
     const loadScript = (src: string, globalName: string) =>
@@ -171,7 +144,8 @@ export function Component() {
       camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
       renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      const isMobile = window.innerWidth < 768;
+      renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
 
       shaderMat = new THREE.ShaderMaterial({
         uniforms: {
@@ -203,15 +177,27 @@ export function Component() {
       }
       containerRef.current!.querySelector(".slider-wrapper")!.classList.add("loaded");
 
+      // --- SCROLL PARALLAX ---
+      let lastScrollY = window.scrollY;
+      let scrollVelocity = 0;
+
+      const trackScroll = () => {
+        const newY = window.scrollY;
+        scrollVelocity = (newY - lastScrollY) * 0.003;
+        lastScrollY = newY;
+      };
+      window.addEventListener("scroll", trackScroll, { passive: true });
+
       // --- RENDER LOOP ---
-      const gyroRef = gyroMouseRef;
       const render = () => {
         requestAnimationFrame(render);
-        // Blend desktop mouse + mobile gyro
-        const targetX = mouse.x + gyroRef.current.x;
-        const targetY = mouse.y + gyroRef.current.y;
-        mouse.sx += (targetX - mouse.sx) * 0.05;
-        mouse.sy += (targetY - mouse.sy) * 0.05;
+        // Desktop: mouse, Mobile: scroll velocity drives Y parallax
+        const targetX = mouse.x;
+        const targetY = mouse.y + scrollVelocity;
+        mouse.sx += (targetX - mouse.sx) * 0.06;
+        mouse.sy += (targetY - mouse.sy) * 0.06;
+        // Decay scroll velocity smoothly
+        scrollVelocity *= 0.92;
         shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
         renderer.render(scene, camera);
       };
