@@ -293,11 +293,37 @@ export function Component() {
       // Start at center of first section
       window.scrollTo({ top: SECTION_H() * 0.5, behavior: "auto" });
 
-      // --- MOUSE ---
+      // --- MOUSE (desktop) ---
       window.addEventListener("mousemove", (e) => {
         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
         mouse.y = (e.clientY / window.innerHeight) * 2 - 1;
       });
+
+      // --- GYROSCOPE (mobile) ---
+      const handleOrientation = (e: DeviceOrientationEvent) => {
+        const gamma = e.gamma || 0; // left/right tilt (-90 to 90)
+        const beta = e.beta || 0;   // front/back tilt (-180 to 180)
+        mouse.x = Math.max(-1, Math.min(1, gamma / 30));
+        mouse.y = Math.max(-1, Math.min(1, (beta - 45) / 30));
+      };
+
+      // iOS 13+ requires permission request
+      if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
+        // Will be triggered on first user tap
+        const requestGyro = () => {
+          (DeviceOrientationEvent as any).requestPermission()
+            .then((state: string) => {
+              if (state === "granted") {
+                window.addEventListener("deviceorientation", handleOrientation);
+              }
+            })
+            .catch(console.warn);
+          window.removeEventListener("touchstart", requestGyro);
+        };
+        window.addEventListener("touchstart", requestGyro, { once: true });
+      } else {
+        window.addEventListener("deviceorientation", handleOrientation);
+      }
 
       // --- RESIZE ---
       window.addEventListener("resize", () => {
