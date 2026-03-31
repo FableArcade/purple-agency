@@ -64,17 +64,16 @@ const ExpandOnHover = () => {
     >
       <GlassFilter />
       <GlassEffect
-        className="rounded-3xl p-2 md:p-3 transition-all duration-700"
+        className="rounded-3xl p-3 transition-opacity duration-700"
         style={{
           opacity: hovered ? 1 : 0.5,
-          background: hovered ? "rgba(255,255,255,0.08)" : "transparent",
         }}
       >
         <div
           className="relative w-[85vw] md:w-full md:max-w-6xl overflow-x-scroll scrollbar-hide rounded-2xl"
           style={{ WebkitOverflowScrolling: "touch" }}
         >
-          <div className="flex items-center gap-2 w-max md:w-full md:justify-center">
+          <div className="flex items-center gap-1 w-max md:w-full md:justify-center">
             {campaigns.map((item, idx) => {
               const isExpanded = idx + 1 === expandedImage;
               return (
