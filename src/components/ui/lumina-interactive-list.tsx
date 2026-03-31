@@ -186,13 +186,25 @@ export function Component() {
       }
       containerRef.current!.querySelector(".slider-wrapper")!.classList.add("loaded");
 
+      // --- MOBILE: use CSS background instead of WebGL between transitions ---
+      const mobileBg = containerRef.current!.querySelector(".mobile-bg") as HTMLElement;
+      const canvasEl = canvas;
+
+      const showMobileBg = (slideIdx: number) => {
+        if (!isMobile || !mobileBg) return;
+        mobileBg.style.backgroundImage = `url(${SLIDES[slideIdx].media})`;
+        mobileBg.style.opacity = "1";
+        canvasEl.style.opacity = "0";
+      };
+
+      const hideMobileBg = () => {
+        if (!isMobile || !mobileBg) return;
+        mobileBg.style.opacity = "0";
+        canvasEl.style.opacity = "1";
+      };
+
       // --- RENDER ---
       let animating = false;
-
-      const renderOnce = () => {
-        shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
-        renderer.render(scene, camera);
-      };
 
       const renderLoop = () => {
         if (!animating) return;
@@ -200,24 +212,21 @@ export function Component() {
         if (!isMobile) {
           mouse.sx += (mouse.x - mouse.sx) * 0.05;
           mouse.sy += (mouse.y - mouse.sy) * 0.05;
+          shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
         }
-        shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
         renderer.render(scene, camera);
       };
 
       const startRenderLoop = () => {
         if (!animating) { animating = true; renderLoop(); }
       };
-      const stopRenderLoop = () => {
-        animating = false;
-        renderOnce();
-      };
+      const stopRenderLoop = () => { animating = false; };
 
-      // Initial render
-      renderOnce();
-
-      // Desktop: continuous render for mouse parallax
-      if (!isMobile) {
+      // Initial state
+      if (isMobile) {
+        showMobileBg(0);
+      } else {
+        renderer.render(scene, camera);
         animating = true;
         renderLoop();
       }
@@ -226,6 +235,7 @@ export function Component() {
       const goToSlide = (idx: number, duration = 0.9) => {
         if (isAnimating || idx === currentSlide || !textures[idx]) return;
         isAnimating = true;
+        hideMobileBg();
         startRenderLoop();
 
         const dir = idx > currentSlide ? 1 : -1;
@@ -262,7 +272,10 @@ export function Component() {
             shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
             currentSlide = idx;
             isAnimating = false;
-            if (isMobile) stopRenderLoop();
+            if (isMobile) {
+              stopRenderLoop();
+              showMobileBg(idx);
+            }
 
             titleEl.textContent = SLIDES[idx].title;
             descEl.textContent = SLIDES[idx].description;
@@ -354,6 +367,7 @@ export function Component() {
       {/* Fixed background: canvas + WebGL */}
       <div className="slider-fixed-layer">
         <main className="slider-wrapper">
+          <div className="mobile-bg" />
           <canvas className="webgl-canvas" />
           <span className="slide-number" id="slideNumber">01</span>
           <span className="slide-total" id="slideTotal">05</span>
