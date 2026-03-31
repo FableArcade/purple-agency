@@ -191,7 +191,6 @@ export function Component() {
 
       const renderOnce = () => {
         shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
-        shaderMat.uniforms.uZoom.value = 1.0;
         renderer.render(scene, camera);
       };
 
@@ -203,7 +202,6 @@ export function Component() {
           mouse.sy += (mouse.y - mouse.sy) * 0.05;
         }
         shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
-        shaderMat.uniforms.uZoom.value = 1.0;
         renderer.render(scene, camera);
       };
 
