@@ -196,15 +196,21 @@ export function Component() {
       };
       window.addEventListener("scroll", onZoomScroll, { passive: true });
 
-      const zoomTick = () => {
-        requestAnimationFrame(zoomTick);
-        zoomScale += (1.0 - zoomScale) * 0.06;
-        if (zoomScale < 1.001) zoomScale = 1;
-        if (!isAnimating) {
-          canvasEl.style.transform = `scale(${zoomScale})`;
-        }
-      };
-      zoomTick();
+      // Only run zoom on mobile
+      if (isMobile) {
+        let lastAppliedZoom = 1;
+        const zoomTick = () => {
+          requestAnimationFrame(zoomTick);
+          zoomScale += (1.0 - zoomScale) * 0.06;
+          if (zoomScale < 1.001) zoomScale = 1;
+          // Only update DOM when value actually changes
+          if (!isAnimating && zoomScale !== lastAppliedZoom) {
+            canvasEl.style.transform = `scale(${zoomScale})`;
+            lastAppliedZoom = zoomScale;
+          }
+        };
+        zoomTick();
+      }
 
       // --- RENDER ---
       let animating = false;
