@@ -263,8 +263,8 @@ export function Component() {
         const centerOfSection = currentSlide * sH + sH * 0.5;
         const distFromCenter = scrollY - centerOfSection;
 
-        // Only trigger when user scrolls past 40% of a section from center
-        if (Math.abs(distFromCenter) > sH * 0.4) {
+        // Only trigger when user scrolls past 30% of a section from center
+        if (Math.abs(distFromCenter) > sH * 0.3) {
           const nextSlide = distFromCenter > 0
             ? Math.min(currentSlide + 1, SLIDES.length - 1)
             : Math.max(currentSlide - 1, 0);
@@ -274,8 +274,8 @@ export function Component() {
             ignoreScroll = true;
             setTimeout(() => {
               window.scrollTo({ top: nextSlide * sH + sH * 0.5, behavior: "auto" });
-              setTimeout(() => { ignoreScroll = false; }, 200);
-            }, 1000);
+              setTimeout(() => { ignoreScroll = false; }, 300);
+            }, 950);
           }
         }
       };
