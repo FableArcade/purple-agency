@@ -249,7 +249,6 @@ export function Component() {
       const goToSlide = (idx: number, duration = 0.9) => {
         if (isAnimating || idx === currentSlide) return;
         isAnimating = true;
-        mouseFrozen = true;
 
         // Update nav
         document.querySelectorAll(".slide-nav-item").forEach((el, i) => {
@@ -288,8 +287,6 @@ export function Component() {
               currentSlide = idx;
               isAnimating = false;
               zoomLastY = window.scrollY;
-              mouse.sx = mouse.x; mouse.sy = mouse.y;
-              mouseFrozen = false;
             },
           });
         } else {
