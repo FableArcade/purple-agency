@@ -288,9 +288,8 @@ export function Component() {
               currentSlide = idx;
               isAnimating = false;
               zoomLastY = window.scrollY;
-              // Sync mouse to current position then unfreeze
               mouse.sx = mouse.x; mouse.sy = mouse.y;
-              setTimeout(() => { mouseFrozen = false; }, 300);
+              mouseFrozen = false;
             },
           });
         } else {
