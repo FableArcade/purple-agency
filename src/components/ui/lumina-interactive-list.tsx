@@ -265,7 +265,6 @@ export function Component() {
       const goToSlide = (idx: number, duration = 0.9) => {
         if (isAnimating || idx === currentSlide) return;
         isAnimating = true;
-        resetZoom();
 
         // Update nav
         document.querySelectorAll(".slide-nav-item").forEach((el, i) => {
@@ -290,12 +289,12 @@ export function Component() {
           shaderMat.uniforms.uTex2.value = textures[idx];
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
-          // Show canvas immediately — render first frame sync
+          // Show canvas at same zoom level as the CSS bg
           canvasEl.style.display = "block";
+          canvasEl.style.transform = `scale(${zoomScaleCurrent})`;
           renderer.render(scene, camera);
           canvasEl.style.transition = "none";
           canvasEl.style.opacity = "1";
-          // Hide CSS bg so canvas is fully visible
           mobileBg.style.opacity = "0";
           startRenderLoop();
 
@@ -305,11 +304,20 @@ export function Component() {
               shaderMat.uniforms.uProgress.value = 0;
               shaderMat.uniforms.uTex1.value = textures[idx];
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
-              // Swap to CSS bg, hide canvas
+              // Swap to CSS bg at current zoom, then ease back to 1
               showMobileBg(idx);
+              mobileBg.style.transform = `scale(${zoomScaleCurrent})`;
+              mobileBg.style.transition = "transform 0.5s ease-out";
+              zoomScaleTarget = 1;
+              zoomScaleCurrent = 1;
+              setTimeout(() => {
+                mobileBg.style.transform = "scale(1)";
+                mobileBg.style.transition = "";
+              }, 50);
               canvasEl.style.transition = "none";
               canvasEl.style.opacity = "0";
               canvasEl.style.display = "none";
+              canvasEl.style.transform = "";
               stopRenderLoop();
               currentSlide = idx;
               isAnimating = false;
