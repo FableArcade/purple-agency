@@ -209,10 +209,12 @@ export function Component() {
       // --- RENDER ---
       let animating = false;
 
+      let mouseFrozen = false;
+
       const renderLoop = () => {
         if (!animating) return;
         requestAnimationFrame(renderLoop);
-        if (!isMobile) {
+        if (!isMobile && !mouseFrozen) {
           mouse.sx += (mouse.x - mouse.sx) * 0.05;
           mouse.sy += (mouse.y - mouse.sy) * 0.05;
           shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
@@ -236,6 +238,7 @@ export function Component() {
       const goToSlide = (idx: number, duration = 0.9) => {
         if (isAnimating || idx === currentSlide) return;
         isAnimating = true;
+        mouseFrozen = true;
 
         // Update nav
         document.querySelectorAll(".slide-nav-item").forEach((el, i) => {
@@ -274,6 +277,9 @@ export function Component() {
               currentSlide = idx;
               isAnimating = false;
               zoomLastY = window.scrollY;
+              // Sync mouse to current position then unfreeze
+              mouse.sx = mouse.x; mouse.sy = mouse.y;
+              setTimeout(() => { mouseFrozen = false; }, 100);
             },
           });
         } else {
@@ -294,6 +300,8 @@ export function Component() {
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
               currentSlide = idx;
               isAnimating = false;
+              mouse.sx = mouse.x; mouse.sy = mouse.y;
+              setTimeout(() => { mouseFrozen = false; }, 100);
             },
           });
         }
