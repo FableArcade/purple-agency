@@ -199,34 +199,27 @@ export function Component() {
         zoomLastY = window.scrollY;
       };
 
-      // Scroll-driven zoom parallax
-      let zoomScaleTarget = 1;
-      let zoomScaleCurrent = 1;
+      // Scroll-driven zoom — only zooms IN, never below 1.0
+      let zoomScale = 1;
       let zoomLastY = window.scrollY;
-
-      const resetZoom = () => {
-        zoomScaleTarget = 1;
-        zoomScaleCurrent = 1;
-        if (mobileBg) mobileBg.style.transform = "scale(1)";
-      };
 
       const onZoomScroll = () => {
         if (isAnimating) return;
         const delta = window.scrollY - zoomLastY;
         zoomLastY = window.scrollY;
-        if (Math.abs(delta) > 1) {
-          zoomScaleTarget = delta > 0 ? 1.06 : 0.96;
+        if (Math.abs(delta) > 2) {
+          zoomScale = Math.min(1.08, zoomScale + Math.abs(delta) * 0.0005);
         }
       };
       window.addEventListener("scroll", onZoomScroll, { passive: true });
 
       const zoomTick = () => {
         requestAnimationFrame(zoomTick);
-        if (isAnimating) return;
-        zoomScaleCurrent += (zoomScaleTarget - zoomScaleCurrent) * 0.04;
-        zoomScaleTarget += (1 - zoomScaleTarget) * 0.01;
-        if (isMobile && mobileBg) {
-          mobileBg.style.transform = `scale(${zoomScaleCurrent})`;
+        // Always decay toward 1.0
+        zoomScale += (1.0 - zoomScale) * 0.02;
+        if (zoomScale < 1.001) zoomScale = 1;
+        if (isMobile && mobileBg && !isAnimating) {
+          mobileBg.style.transform = `scale(${zoomScale})`;
         }
       };
       zoomTick();
@@ -289,10 +282,12 @@ export function Component() {
           shaderMat.uniforms.uTex2.value = textures[idx];
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
-          // Canvas overlays on top — CSS bg stays visible underneath
-          const savedZoom = zoomScaleCurrent;
+          // Reset zoom to 1 before showing canvas
+          zoomScale = 1;
+          mobileBg.style.transform = "scale(1)";
+
+          // Show canvas on top
           canvasEl.style.display = "block";
-          canvasEl.style.transform = `scale(${savedZoom})`;
           canvasEl.style.transition = "none";
           canvasEl.style.opacity = "1";
           renderer.render(scene, camera);
@@ -305,27 +300,22 @@ export function Component() {
               shaderMat.uniforms.uTex1.value = textures[idx];
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
 
-              // Update CSS bg to new image FIRST (underneath canvas)
+              // Set CSS bg to new image underneath
               mobileBg.style.backgroundImage = `url(${SLIDES[idx].media})`;
-              mobileBg.style.transform = `scale(${savedZoom})`;
               mobileBg.style.opacity = "1";
+              mobileBg.style.transform = "scale(1)";
 
-              // Wait a frame for CSS bg to paint, then hide canvas
+              // Double rAF to ensure CSS bg painted before hiding canvas
               requestAnimationFrame(() => {
-                canvasEl.style.transition = "none";
-                canvasEl.style.opacity = "0";
-                canvasEl.style.display = "none";
-                canvasEl.style.transform = "";
-                stopRenderLoop();
-
-                // Ease zoom back to 1
-                zoomScaleTarget = 1;
-                zoomScaleCurrent = savedZoom;
+                requestAnimationFrame(() => {
+                  canvasEl.style.opacity = "0";
+                  canvasEl.style.display = "none";
+                  stopRenderLoop();
+                  currentSlide = idx;
+                  isAnimating = false;
+                  zoomLastY = window.scrollY;
+                });
               });
-
-              currentSlide = idx;
-              isAnimating = false;
-              zoomLastY = window.scrollY;
             },
           });
         } else {
