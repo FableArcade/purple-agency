@@ -197,14 +197,14 @@ export function Component() {
         const delta = window.scrollY - zoomLastY;
         zoomLastY = window.scrollY;
         if (Math.abs(delta) > 2) {
-          zoomScale = Math.min(1.08, zoomScale + Math.abs(delta) * 0.0005);
+          zoomScale = Math.min(1.03, zoomScale + Math.abs(delta) * 0.0003);
         }
       };
       window.addEventListener("scroll", onZoomScroll, { passive: true });
 
       const zoomTick = () => {
         requestAnimationFrame(zoomTick);
-        zoomScale += (1.0 - zoomScale) * 0.02;
+        zoomScale += (1.0 - zoomScale) * 0.06;
         if (zoomScale < 1.001) zoomScale = 1;
         if (!isAnimating) {
           canvasEl.style.transform = `scale(${zoomScale})`;
