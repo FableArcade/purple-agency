@@ -57,9 +57,10 @@ const ExpandOnHover = () => {
 
   return (
     <div
-      className="w-full flex items-center justify-center px-4"
+      className="w-full flex items-center justify-center px-2 md:px-4"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      style={{ touchAction: "pan-x" }}
     >
       <GlassFilter />
       <GlassEffect
@@ -69,8 +70,8 @@ const ExpandOnHover = () => {
           background: hovered ? "rgba(255,255,255,0.08)" : "transparent",
         }}
       >
-        <div className="relative w-full max-w-6xl overflow-x-auto scrollbar-hide">
-          <div className="flex items-center justify-start md:justify-center gap-1 min-w-max md:min-w-0">
+        <div className="relative w-[85vw] md:w-full md:max-w-6xl overflow-x-scroll scrollbar-hide" style={{ WebkitOverflowScrolling: "touch" }}>
+          <div className="flex items-center gap-2 w-max md:w-full md:justify-center">
             {campaigns.map((item, idx) => {
               const isExpanded = idx + 1 === expandedImage;
               return (
@@ -78,8 +79,8 @@ const ExpandOnHover = () => {
                   key={idx}
                   className="relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-500 ease-in-out flex-shrink-0"
                   style={{
-                    width: isExpanded ? "min(24rem, 70vw)" : "min(5rem, 14vw)",
-                    height: "min(24rem, 60vh)",
+                    width: isExpanded ? "min(24rem, 65vw)" : "3.5rem",
+                    height: "min(22rem, 55vh)",
                   }}
                   onMouseEnter={() => setExpandedImage(idx + 1)}
                   onTouchStart={() => setExpandedImage(idx + 1)}
