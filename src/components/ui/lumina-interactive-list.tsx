@@ -210,6 +210,11 @@ export function Component() {
         });
         document.getElementById("slideNumber")!.textContent = String(idx + 1).padStart(2, "0");
 
+        // Switch text content at the midpoint of the ripple
+        setTimeout(() => {
+          setActiveSlideRef.current(idx);
+        }, duration * 400);
+
         gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
           value: 1, duration, ease: "power2.inOut",
           onComplete: () => {
@@ -217,10 +222,8 @@ export function Component() {
             shaderMat.uniforms.uTex1.value = textures[idx];
             shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
             currentSlide = idx;
-            setActiveSlideRef.current(idx);
             isAnimating = false;
 
-            // New text in
             titleEl.textContent = SLIDES[idx].title;
             descEl.textContent = SLIDES[idx].description;
             gsap.fromTo(titleEl, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" });
