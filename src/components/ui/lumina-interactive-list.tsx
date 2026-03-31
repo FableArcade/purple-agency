@@ -253,7 +253,7 @@ export function Component() {
       // Initial state
       if (isMobile) {
         showMobileBg(0);
-        canvasEl.style.opacity = "0";
+        canvasEl.style.display = "none";
       } else {
         renderer.render(scene, camera);
         animating = true;
@@ -280,33 +280,25 @@ export function Component() {
         }, duration * 400);
 
         if (isMobile) {
-          // MOBILE: show canvas for ripple, then swap back to CSS bg
-          if (!textures[idx]) { isAnimating = false; return; }
-
-          shaderMat.uniforms.uDirection.value = idx > currentSlide ? 1 : -1;
-          shaderMat.uniforms.uTex1.value = textures[currentSlide];
-          shaderMat.uniforms.uTex1Size.value = textures[currentSlide].userData.size;
-          shaderMat.uniforms.uTex2.value = textures[idx];
-          shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
-
-          // Show canvas on top
-          canvasEl.style.opacity = "1";
-          startRenderLoop();
-
-          gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
-            value: 1, duration, ease: "power2.inOut",
-            onComplete: () => {
-              // Swap CSS bg to new image, hide canvas
-              shaderMat.uniforms.uProgress.value = 0;
-              shaderMat.uniforms.uTex1.value = textures[idx];
-              shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
-              showMobileBg(idx);
-              canvasEl.style.opacity = "0";
-              stopRenderLoop();
-              currentSlide = idx;
-              isAnimating = false;
-            },
-          });
+          // MOBILE: pure CSS crossfade — no canvas involved
+          if (mobileBgNext) {
+            mobileBgNext.style.transition = "none";
+            mobileBgNext.style.opacity = "0";
+            mobileBgNext.style.backgroundImage = `url(${SLIDES[idx].media})`;
+            mobileBgNext.style.transform = "scale(1)";
+            void mobileBgNext.offsetHeight;
+            mobileBgNext.style.transition = "opacity 0.9s ease";
+            mobileBgNext.style.opacity = "1";
+          }
+          setTimeout(() => {
+            showMobileBg(idx);
+            if (mobileBgNext) {
+              mobileBgNext.style.transition = "none";
+              mobileBgNext.style.opacity = "0";
+            }
+            currentSlide = idx;
+            isAnimating = false;
+          }, 1000);
         } else {
           // DESKTOP: WebGL ripple transition
           if (!textures[idx]) return;
