@@ -193,7 +193,13 @@ export function Component() {
       let zoomLastY = window.scrollY;
 
       const onZoomScroll = () => {
-        if (isAnimating) return;
+        if (isAnimating || locked) return;
+        // Freeze zoom when close to transition boundary
+        const sH = SECTION_H();
+        const center = currentSlide * sH + sH * 0.5;
+        const dist = Math.abs(window.scrollY - center);
+        if (dist > sH * 0.2) return; // approaching boundary, stop zooming
+
         const delta = window.scrollY - zoomLastY;
         zoomLastY = window.scrollY;
         if (Math.abs(delta) > 2) {
