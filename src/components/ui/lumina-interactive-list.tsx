@@ -280,21 +280,27 @@ export function Component() {
         }, duration * 400);
 
         if (isMobile) {
-          // MOBILE: pure CSS crossfade — no canvas involved
+          // MOBILE: CSS crossfade with ripple filter
           if (mobileBgNext) {
             mobileBgNext.style.transition = "none";
             mobileBgNext.style.opacity = "0";
             mobileBgNext.style.backgroundImage = `url(${SLIDES[idx].media})`;
             mobileBgNext.style.transform = "scale(1)";
+            mobileBgNext.style.filter = "url(#mobile-ripple)";
             void mobileBgNext.offsetHeight;
-            mobileBgNext.style.transition = "opacity 0.9s ease";
+            mobileBgNext.style.transition = "opacity 0.9s ease, filter 1.2s ease";
             mobileBgNext.style.opacity = "1";
+            // Remove ripple filter as it settles
+            setTimeout(() => {
+              if (mobileBgNext) mobileBgNext.style.filter = "none";
+            }, 300);
           }
           setTimeout(() => {
             showMobileBg(idx);
             if (mobileBgNext) {
               mobileBgNext.style.transition = "none";
               mobileBgNext.style.opacity = "0";
+              mobileBgNext.style.filter = "none";
             }
             currentSlide = idx;
             isAnimating = false;
@@ -401,6 +407,26 @@ export function Component() {
 
   return (
     <div ref={containerRef} className="lumina-slider-root">
+      {/* SVG ripple filter for mobile transitions */}
+      <svg style={{ position: "absolute", width: 0, height: 0 }}>
+        <filter id="mobile-ripple">
+          <feTurbulence
+            type="turbulence"
+            baseFrequency="0.015 0.015"
+            numOctaves={3}
+            seed={2}
+            result="turbulence"
+          />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="turbulence"
+            scale={25}
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </svg>
+
       {/* Fixed background: canvas + WebGL */}
       <div className="slider-fixed-layer">
         <main className="slider-wrapper">
