@@ -230,7 +230,10 @@ export function Component() {
 
         // Scroll to matching section
         const sectionH = window.innerHeight * 2;
-        window.scrollTo({ top: idx * sectionH + sectionH * 0.5, behavior: "smooth" });
+        ignoreScroll = true;
+        window.scrollTo({ top: idx * sectionH + sectionH * 0.5, behavior: "auto" });
+        lastScrollSection = idx;
+        setTimeout(() => { ignoreScroll = false; }, 500);
       };
 
       // --- NAV ---
@@ -253,20 +256,31 @@ export function Component() {
       const SECTION_H = () => window.innerHeight * 2;
 
       let lastScrollSection = 0;
+      let ignoreScroll = false;
+
       const onScroll = () => {
-        if (isAnimating) return;
+        if (isAnimating || ignoreScroll) return;
         const scrollY = window.scrollY;
         const sH = SECTION_H();
-        const section = Math.min(Math.floor((scrollY + window.innerHeight * 0.5) / sH), SLIDES.length - 1);
+        // Use simple division — each section is sH tall
+        const section = Math.min(Math.floor(scrollY / sH), SLIDES.length - 1);
 
         if (section !== lastScrollSection && section !== currentSlide) {
           goToSlide(section, 0.9);
-          lastScrollSection = section;
-        } else {
-          lastScrollSection = section;
+          // After transition, snap scroll to center of new section
+          ignoreScroll = true;
+          setTimeout(() => {
+            window.scrollTo({ top: section * sH + sH * 0.5, behavior: "auto" });
+            lastScrollSection = section;
+            setTimeout(() => { ignoreScroll = false; }, 100);
+          }, 1000);
         }
+        lastScrollSection = section;
       };
       window.addEventListener("scroll", onScroll, { passive: true });
+
+      // Start at center of first section
+      window.scrollTo({ top: SECTION_H() * 0.5, behavior: "auto" });
 
       // --- MOUSE ---
       window.addEventListener("mousemove", (e) => {
