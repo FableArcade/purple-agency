@@ -225,6 +225,7 @@ export function Component() {
       // Initial state
       if (isMobile) {
         showMobileBg(0);
+        canvasEl.style.display = "none"; // No WebGL on mobile at all
       } else {
         renderer.render(scene, camera);
         animating = true;
@@ -233,23 +234,8 @@ export function Component() {
 
       // --- NAVIGATE ---
       const goToSlide = (idx: number, duration = 0.9) => {
-        if (isAnimating || idx === currentSlide || !textures[idx]) return;
+        if (isAnimating || idx === currentSlide) return;
         isAnimating = true;
-        hideMobileBg();
-        startRenderLoop();
-
-        const dir = idx > currentSlide ? 1 : -1;
-        shaderMat.uniforms.uDirection.value = dir;
-        shaderMat.uniforms.uTex1.value = textures[currentSlide];
-        shaderMat.uniforms.uTex1Size.value = textures[currentSlide].userData.size;
-        shaderMat.uniforms.uTex2.value = textures[idx];
-        shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
-
-        // Update text
-        const titleEl = document.getElementById("mainTitle")!;
-        const descEl = document.getElementById("mainDesc")!;
-        gsap.to(titleEl, { opacity: 0, y: -20, duration: 0.3 });
-        gsap.to(descEl, { opacity: 0, y: -10, duration: 0.3 });
 
         // Update nav
         document.querySelectorAll(".slide-nav-item").forEach((el, i) => {
@@ -259,30 +245,51 @@ export function Component() {
         });
         document.getElementById("slideNumber")!.textContent = String(idx + 1).padStart(2, "0");
 
-        // Switch text content at the midpoint of the ripple
+        // Switch text content at midpoint
         setTimeout(() => {
           setActiveSlideRef.current(idx);
         }, duration * 400);
 
-        gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
-          value: 1, duration, ease: "power2.inOut",
-          onComplete: () => {
-            shaderMat.uniforms.uProgress.value = 0;
-            shaderMat.uniforms.uTex1.value = textures[idx];
-            shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
+        if (isMobile) {
+          // MOBILE: pure CSS crossfade — no WebGL
+          const mobileBgNext = containerRef.current!.querySelector(".mobile-bg-next") as HTMLElement;
+          if (mobileBgNext) {
+            mobileBgNext.style.backgroundImage = `url(${SLIDES[idx].media})`;
+            mobileBgNext.style.opacity = "1";
+          }
+          setTimeout(() => {
+            if (mobileBg) {
+              mobileBg.style.backgroundImage = `url(${SLIDES[idx].media})`;
+            }
+            if (mobileBgNext) {
+              mobileBgNext.style.transition = "none";
+              mobileBgNext.style.opacity = "0";
+              setTimeout(() => { mobileBgNext.style.transition = "opacity 0.8s ease"; }, 50);
+            }
             currentSlide = idx;
             isAnimating = false;
-            if (isMobile) {
-              stopRenderLoop();
-              showMobileBg(idx);
-            }
+          }, 800);
+        } else {
+          // DESKTOP: WebGL ripple transition
+          if (!textures[idx]) return;
+          const dir = idx > currentSlide ? 1 : -1;
+          shaderMat.uniforms.uDirection.value = dir;
+          shaderMat.uniforms.uTex1.value = textures[currentSlide];
+          shaderMat.uniforms.uTex1Size.value = textures[currentSlide].userData.size;
+          shaderMat.uniforms.uTex2.value = textures[idx];
+          shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
-            titleEl.textContent = SLIDES[idx].title;
-            descEl.textContent = SLIDES[idx].description;
-            gsap.fromTo(titleEl, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" });
-            gsap.fromTo(descEl, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, delay: 0.1, ease: "power3.out" });
-          },
-        });
+          gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
+            value: 1, duration, ease: "power2.inOut",
+            onComplete: () => {
+              shaderMat.uniforms.uProgress.value = 0;
+              shaderMat.uniforms.uTex1.value = textures[idx];
+              shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
+              currentSlide = idx;
+              isAnimating = false;
+            },
+          });
+        }
 
         // Scroll to matching section
         lockScroll();
@@ -368,6 +375,7 @@ export function Component() {
       <div className="slider-fixed-layer">
         <main className="slider-wrapper">
           <div className="mobile-bg" />
+          <div className="mobile-bg-next" />
           <canvas className="webgl-canvas" />
           <span className="slide-number" id="slideNumber">01</span>
           <span className="slide-total" id="slideTotal">05</span>
