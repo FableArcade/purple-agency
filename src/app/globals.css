@@ -390,6 +390,12 @@
   height: 300vh;
 }
 
+@media (max-width: 768px) {
+  .slider-scroll-section {
+    height: 200vh;
+  }
+}
+
 /* Fixed center content overlay */
 .fixed-slide-content {
   position: fixed;

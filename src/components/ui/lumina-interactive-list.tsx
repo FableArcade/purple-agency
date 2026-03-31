@@ -320,7 +320,8 @@ export function Component() {
       document.getElementById("slideTotal")!.textContent = String(SLIDES.length).padStart(2, "0");
 
       // --- SCROLL DRIVEN ---
-      const SECTION_H = () => window.innerHeight * 3;
+      const isMobileDevice = window.innerWidth < 768;
+      const SECTION_H = () => window.innerHeight * (isMobileDevice ? 2 : 3);
 
       let locked = false;
 
