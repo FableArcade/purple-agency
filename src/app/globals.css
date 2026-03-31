@@ -17,6 +17,203 @@
   to { background-position: 0% -1000%; }
 }
 
+/* ===== Service Wheel ===== */
+.wheel-container {
+  position: relative;
+  width: 550px;
+  height: 550px;
+  margin: 0 auto;
+}
+
+.wheel-orbits {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  pointer-events: none;
+}
+
+.wheel-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 35%,
+    rgba(168, 85, 247, 0.12) 0%,
+    rgba(30, 20, 50, 0.6) 50%,
+    rgba(10, 10, 10, 0.8) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+  box-shadow:
+    0 0 60px rgba(168, 85, 247, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.wheel-center-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  width: 220px;
+}
+
+.wheel-sub-service {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.wheel-sub-service:hover {
+  background: rgba(168, 85, 247, 0.15);
+  border-color: rgba(168, 85, 247, 0.3);
+  transform: translateX(4px);
+}
+
+.wheel-sub-icon {
+  color: #a855f7;
+  flex-shrink: 0;
+  display: flex;
+}
+
+.wheel-sub-label {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.wheel-satellite {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 112px;
+  height: 112px;
+  margin-left: -56px;
+  margin-top: -56px;
+  border-radius: 50%;
+  background: rgba(20, 15, 30, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+}
+
+.wheel-satellite:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: rgba(30, 20, 50, 0.8);
+  transform: translate(var(--tw-translate-x, 0), var(--tw-translate-y, 0)) scale(1.08);
+}
+
+.wheel-satellite.active {
+  background: rgba(168, 85, 247, 0.9);
+  border-color: rgba(168, 85, 247, 0.6);
+  box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+  z-index: 4;
+}
+
+.wheel-satellite-label {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.wheel-satellite.active .wheel-satellite-label {
+  color: #fff;
+  font-weight: 600;
+}
+
+.wheel-satellite-toggle {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: 300;
+}
+
+.wheel-satellite.active .wheel-satellite-toggle {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile wheel */
+@media (max-width: 768px) {
+  .wheel-container {
+    width: 340px;
+    height: 340px;
+  }
+
+  .wheel-orbits {
+    width: 440px;
+    height: 440px;
+  }
+
+  .wheel-center {
+    width: 200px;
+    height: 200px;
+  }
+
+  .wheel-center-inner {
+    padding: 12px;
+    width: 160px;
+    gap: 4px;
+  }
+
+  .wheel-sub-service {
+    padding: 6px 8px;
+    gap: 8px;
+    font-size: 0.7rem;
+    border-radius: 8px;
+  }
+
+  .wheel-sub-icon {
+    display: none;
+  }
+
+  .wheel-satellite {
+    width: 72px;
+    height: 72px;
+    margin-left: -36px;
+    margin-top: -36px;
+  }
+
+  .wheel-satellite-label {
+    font-size: 0.55rem;
+  }
+
+  .wheel-satellite-toggle {
+    font-size: 0.7rem;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
