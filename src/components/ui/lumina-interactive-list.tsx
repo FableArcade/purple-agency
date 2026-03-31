@@ -105,7 +105,7 @@ export function Component() {
 
         void main(){
           float p=uProgress;
-          vec2 mOff=uMouse*0.03;
+          vec2 mOff=uMouse*0.015;
 
           vec2 uv1=coverUV(vUv,uTex1Size)+mOff;
           vec2 uv2=coverUV(vUv,uTex2Size)+mOff;
@@ -221,8 +221,13 @@ export function Component() {
         if (!animating) return;
         requestAnimationFrame(renderLoop);
         if (!isMobile && !mouseFrozen) {
-          mouse.sx += (mouse.x - mouse.sx) * 0.05;
-          mouse.sy += (mouse.y - mouse.sy) * 0.05;
+          const dx = mouse.x - mouse.sx;
+          const dy = mouse.y - mouse.sy;
+          // Deadzone — ignore tiny movements
+          if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
+            mouse.sx += dx * 0.03;
+            mouse.sy += dy * 0.03;
+          }
           shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
         }
         renderer.render(scene, camera);
@@ -285,7 +290,7 @@ export function Component() {
               zoomLastY = window.scrollY;
               // Sync mouse to current position then unfreeze
               mouse.sx = mouse.x; mouse.sy = mouse.y;
-              setTimeout(() => { mouseFrozen = false; }, 100);
+              setTimeout(() => { mouseFrozen = false; }, 300);
             },
           });
         } else {
@@ -307,7 +312,7 @@ export function Component() {
               currentSlide = idx;
               isAnimating = false;
               mouse.sx = mouse.x; mouse.sy = mouse.y;
-              setTimeout(() => { mouseFrozen = false; }, 100);
+              setTimeout(() => { mouseFrozen = false; }, 300);
             },
           });
         }
