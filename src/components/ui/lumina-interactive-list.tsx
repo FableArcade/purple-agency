@@ -229,10 +229,8 @@ export function Component() {
         });
 
         // Scroll to matching section
-        const sectionH = window.innerHeight * 3;
-        ignoreScroll = true;
-        window.scrollTo({ top: idx * sectionH + sectionH * 0.5, behavior: "auto" });
-        setTimeout(() => { ignoreScroll = false; }, 500);
+        lockScroll();
+        setTimeout(() => unlockScroll(idx), 600);
       };
 
       // --- NAV ---
@@ -254,28 +252,36 @@ export function Component() {
       // --- SCROLL DRIVEN ---
       const SECTION_H = () => window.innerHeight * 3;
 
-      let ignoreScroll = false;
+      let locked = false;
+
+      const lockScroll = () => {
+        locked = true;
+        document.body.style.overflow = "hidden";
+      };
+
+      const unlockScroll = (slideIdx: number) => {
+        const sH = SECTION_H();
+        window.scrollTo({ top: slideIdx * sH + sH * 0.5, behavior: "auto" });
+        document.body.style.overflow = "";
+        setTimeout(() => { locked = false; }, 100);
+      };
 
       const onScroll = () => {
-        if (isAnimating || ignoreScroll) return;
+        if (isAnimating || locked) return;
         const scrollY = window.scrollY;
         const sH = SECTION_H();
         const centerOfSection = currentSlide * sH + sH * 0.5;
         const distFromCenter = scrollY - centerOfSection;
 
-        // Only trigger when user scrolls past 30% of a section from center
         if (Math.abs(distFromCenter) > sH * 0.3) {
           const nextSlide = distFromCenter > 0
             ? Math.min(currentSlide + 1, SLIDES.length - 1)
             : Math.max(currentSlide - 1, 0);
 
           if (nextSlide !== currentSlide) {
+            lockScroll();
             goToSlide(nextSlide, 0.9);
-            ignoreScroll = true;
-            setTimeout(() => {
-              window.scrollTo({ top: nextSlide * sH + sH * 0.5, behavior: "auto" });
-              setTimeout(() => { ignoreScroll = false; }, 300);
-            }, 950);
+            setTimeout(() => unlockScroll(nextSlide), 1000);
           }
         }
       };
