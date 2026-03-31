@@ -272,7 +272,9 @@ export function Component() {
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
           zoomScale = 1;
+          canvasEl.style.transition = "transform 0.15s ease-out";
           canvasEl.style.transform = "scale(1)";
+          setTimeout(() => { canvasEl.style.transition = ""; }, 200);
           startRenderLoop();
 
           gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
@@ -291,6 +293,8 @@ export function Component() {
           });
         } else {
           // DESKTOP: WebGL ripple transition
+          zoomScale = 1;
+          canvasEl.style.transform = "scale(1)";
           if (!textures[idx]) return;
           const dir = idx > currentSlide ? 1 : -1;
           shaderMat.uniforms.uDirection.value = dir;
