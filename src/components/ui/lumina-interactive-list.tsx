@@ -62,8 +62,35 @@ const SLIDES = [
 export function Component() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [gyroEnabled, setGyroEnabled] = useState(false);
+  const gyroMouseRef = useRef({ x: 0, y: 0 });
   const setActiveSlideRef = useRef(setActiveSlide);
   setActiveSlideRef.current = setActiveSlide;
+
+  // iOS gyro permission must be in a direct click handler
+  const requestGyro = () => {
+    if (gyroEnabled) return;
+    const handler = (e: DeviceOrientationEvent) => {
+      const gamma = e.gamma || 0;
+      const beta = e.beta || 0;
+      gyroMouseRef.current.x = Math.max(-1, Math.min(1, gamma / 20));
+      gyroMouseRef.current.y = Math.max(-1, Math.min(1, (beta - 60) / 20));
+    };
+
+    if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
+      (DeviceOrientationEvent as any).requestPermission()
+        .then((state: string) => {
+          if (state === "granted") {
+            window.addEventListener("deviceorientation", handler);
+            setGyroEnabled(true);
+          }
+        })
+        .catch(() => {});
+    } else if ("DeviceOrientationEvent" in window) {
+      window.addEventListener("deviceorientation", handler);
+      setGyroEnabled(true);
+    }
+  };
 
   useEffect(() => {
     const loadScript = (src: string, globalName: string) =>
@@ -175,10 +202,14 @@ export function Component() {
       containerRef.current!.querySelector(".slider-wrapper")!.classList.add("loaded");
 
       // --- RENDER LOOP ---
+      const gyroRef = gyroMouseRef;
       const render = () => {
         requestAnimationFrame(render);
-        mouse.sx += (mouse.x - mouse.sx) * 0.05;
-        mouse.sy += (mouse.y - mouse.sy) * 0.05;
+        // Blend desktop mouse + mobile gyro
+        const targetX = mouse.x + gyroRef.current.x;
+        const targetY = mouse.y + gyroRef.current.y;
+        mouse.sx += (targetX - mouse.sx) * 0.05;
+        mouse.sy += (targetY - mouse.sy) * 0.05;
         shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
         renderer.render(scene, camera);
       };
@@ -299,41 +330,7 @@ export function Component() {
         mouse.y = (e.clientY / window.innerHeight) * 2 - 1;
       });
 
-      // --- GYROSCOPE (mobile) ---
-      const handleOrientation = (e: DeviceOrientationEvent) => {
-        const gamma = e.gamma || 0;
-        const beta = e.beta || 0;
-        mouse.x = Math.max(-1, Math.min(1, gamma / 20));
-        mouse.y = Math.max(-1, Math.min(1, (beta - 60) / 20));
-      };
-
-      const enableGyro = () => {
-        if (typeof (DeviceOrientationEvent as any).requestPermission === "function") {
-          (DeviceOrientationEvent as any).requestPermission()
-            .then((state: string) => {
-              if (state === "granted") {
-                window.addEventListener("deviceorientation", handleOrientation);
-              }
-            })
-            .catch(() => {});
-        } else if ("DeviceOrientationEvent" in window) {
-          window.addEventListener("deviceorientation", handleOrientation);
-        }
-      };
-
-      // Try immediately for Android / non-Safari
-      if (typeof (DeviceOrientationEvent as any).requestPermission !== "function") {
-        enableGyro();
-      }
-
-      // For iOS Safari — attach to every touch/click event until granted
-      const tryGyroOnInteraction = () => {
-        enableGyro();
-        window.removeEventListener("touchstart", tryGyroOnInteraction);
-        window.removeEventListener("click", tryGyroOnInteraction);
-      };
-      window.addEventListener("touchstart", tryGyroOnInteraction, { once: true });
-      window.addEventListener("click", tryGyroOnInteraction, { once: true });
+      // Gyro is handled by React click handler (requestGyro) for iOS permission
 
       // --- RESIZE ---
       window.addEventListener("resize", () => {
@@ -346,7 +343,7 @@ export function Component() {
   }, []);
 
   return (
-    <div ref={containerRef} className="lumina-slider-root">
+    <div ref={containerRef} className="lumina-slider-root" onClick={requestGyro}>
       {/* Fixed background: canvas + WebGL */}
       <div className="slider-fixed-layer">
         <main className="slider-wrapper">
