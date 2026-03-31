@@ -57,7 +57,7 @@ const ExpandOnHover = () => {
 
   return (
     <div
-      className="w-full flex items-center justify-center px-2 md:px-4"
+      className="w-full flex items-center justify-center"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ touchAction: "pan-x" }}
