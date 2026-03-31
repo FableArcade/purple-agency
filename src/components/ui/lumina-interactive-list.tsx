@@ -93,7 +93,7 @@ export function Component() {
       const vertSrc = `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`;
       const fragSrc = `
         uniform sampler2D uTex1, uTex2;
-        uniform float uProgress, uDirection, uMobile, uZoom;
+        uniform float uProgress, uDirection, uMobile;
         uniform vec2 uRes, uTex1Size, uTex2Size, uMouse;
         varying vec2 vUv;
 
@@ -107,10 +107,8 @@ export function Component() {
           float p=uProgress;
           vec2 mOff=uMouse*0.03;
 
-          // Apply zoom from center
-          vec2 zoomedUv = (vUv - 0.5) / uZoom + 0.5;
-          vec2 uv1=coverUV(zoomedUv,uTex1Size)+mOff;
-          vec2 uv2=coverUV(zoomedUv,uTex2Size)+mOff*0.6;
+          vec2 uv1=coverUV(vUv,uTex1Size)+mOff;
+          vec2 uv2=coverUV(vUv,uTex2Size)+mOff*0.6;
 
           if(uMobile>0.5){
             // Mobile: clean crossfade, no distortion
@@ -166,7 +164,6 @@ export function Component() {
           uTex2Size: { value: new THREE.Vector2(1, 1) },
           uMouse: { value: new THREE.Vector2(0, 0) },
           uMobile: { value: isMobile ? 1.0 : 0.0 },
-          uZoom: { value: 1.0 },
         },
         vertexShader: vertSrc, fragmentShader: fragSrc,
       });
@@ -189,46 +186,49 @@ export function Component() {
       }
       containerRef.current!.querySelector(".slider-wrapper")!.classList.add("loaded");
 
-      // --- SCROLL ZOOM ---
-      let zoomTarget = 1.0;
-      let zoomCurrent = 1.0;
-      let lastScrollY = window.scrollY;
+      // --- RENDER ---
+      let animating = false;
 
-      const trackScroll = () => {
-        if (locked || isAnimating) return;
-        const delta = window.scrollY - lastScrollY;
-        lastScrollY = window.scrollY;
-        if (delta > 0) zoomTarget = 1.03;      // scroll down = slight zoom in
-        else if (delta < 0) zoomTarget = 0.97;  // scroll up = slight zoom out
+      const renderOnce = () => {
+        shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
+        shaderMat.uniforms.uZoom.value = 1.0;
+        renderer.render(scene, camera);
       };
-      window.addEventListener("scroll", trackScroll, { passive: true });
 
-      // --- RENDER LOOP ---
-      const render = () => {
-        requestAnimationFrame(render);
-        // Desktop mouse only — no floating on mobile
+      const renderLoop = () => {
+        if (!animating) return;
+        requestAnimationFrame(renderLoop);
         if (!isMobile) {
           mouse.sx += (mouse.x - mouse.sx) * 0.05;
           mouse.sy += (mouse.y - mouse.sy) * 0.05;
         }
-        // Smooth zoom interpolation
-        zoomCurrent += (zoomTarget - zoomCurrent) * 0.04;
-        // Decay zoom back to 1.0
-        zoomTarget += (1.0 - zoomTarget) * 0.02;
-
         shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
-        shaderMat.uniforms.uZoom.value = zoomCurrent;
+        shaderMat.uniforms.uZoom.value = 1.0;
         renderer.render(scene, camera);
       };
-      render();
+
+      const startRenderLoop = () => {
+        if (!animating) { animating = true; renderLoop(); }
+      };
+      const stopRenderLoop = () => {
+        animating = false;
+        renderOnce();
+      };
+
+      // Initial render
+      renderOnce();
+
+      // Desktop: continuous render for mouse parallax
+      if (!isMobile) {
+        animating = true;
+        renderLoop();
+      }
 
       // --- NAVIGATE ---
       const goToSlide = (idx: number, duration = 0.9) => {
         if (isAnimating || idx === currentSlide || !textures[idx]) return;
         isAnimating = true;
-        // Reset zoom so there's no bounce on landing
-        zoomTarget = 1.0;
-        zoomCurrent = 1.0;
+        startRenderLoop();
 
         const dir = idx > currentSlide ? 1 : -1;
         shaderMat.uniforms.uDirection.value = dir;
@@ -264,6 +264,7 @@ export function Component() {
             shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
             currentSlide = idx;
             isAnimating = false;
+            if (isMobile) stopRenderLoop();
 
             titleEl.textContent = SLIDES[idx].title;
             descEl.textContent = SLIDES[idx].description;
