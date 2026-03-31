@@ -54,7 +54,6 @@ const campaigns = [
 const ExpandOnHover = () => {
   const [expandedImage, setExpandedImage] = useState(4);
   const [hovered, setHovered] = useState(false);
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
 
   return (
     <div
@@ -67,8 +66,8 @@ const ExpandOnHover = () => {
       <GlassEffect
         className="rounded-3xl p-2 md:p-3 transition-all duration-700"
         style={{
-          opacity: isMobile || hovered ? 1 : 0.5,
-          background: isMobile || hovered ? "rgba(255,255,255,0.08)" : "transparent",
+          opacity: hovered ? 1 : 0.5,
+          background: hovered ? "rgba(255,255,255,0.08)" : "transparent",
         }}
       >
         <div

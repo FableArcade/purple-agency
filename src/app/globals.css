@@ -581,6 +581,14 @@
     padding: 0 1rem;
   }
 
+  /* Force work section glass to full opacity on mobile */
+  .fixed-slide-panel .relative.cursor-pointer,
+  .fixed-slide-panel [class*="GlassEffect"],
+  .fixed-slide-panel .rounded-3xl {
+    opacity: 1 !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
+
   .lumina-slider-root {
     overflow-x: hidden;
   }
