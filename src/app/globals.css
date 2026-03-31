@@ -356,16 +356,21 @@
 .slider-scroll-section {
   height: 200vh;
   position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .scroll-section-inner {
   position: sticky;
-  top: 50%;
+  top: 50vh;
   transform: translateY(-50%);
   max-width: 900px;
+  width: 100%;
   padding: 2.5rem;
   margin: 0 auto;
   text-align: center;
+  box-sizing: border-box;
 }
 
 .scroll-section-work {
@@ -524,8 +529,8 @@
 
   .scroll-section-inner {
     max-width: 100%;
-    padding: 1.5rem;
-    top: 50%;
+    padding: 1.5rem 2rem;
+    top: 50vh;
     transform: translateY(-50%);
   }
 
@@ -536,6 +541,7 @@
 
   .scroll-section-text {
     font-size: 0.9rem;
+    white-space: normal;
   }
 
   .slide-description {
@@ -549,6 +555,8 @@
   }
 
   .scroll-section-work {
+    top: 50vh;
+    transform: translateY(-50%);
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding: 0 1rem;

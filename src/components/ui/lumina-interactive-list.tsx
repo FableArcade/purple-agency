@@ -226,7 +226,7 @@ export function Component() {
 
         // Scroll to matching section
         const sectionH = window.innerHeight * 2;
-        window.scrollTo({ top: idx * sectionH + sectionH * 0.25, behavior: "smooth" });
+        window.scrollTo({ top: idx * sectionH + sectionH * 0.3, behavior: "smooth" });
       };
 
       // --- NAV ---
