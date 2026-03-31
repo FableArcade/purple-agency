@@ -1,193 +1,211 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Brain,
   Paintbrush,
   Target,
   Mail,
   Code,
-  TrendingUp,
-  Search,
-  MapPin,
-  Megaphone,
-  Palette,
-  Video,
-  FileText,
-  BarChart3,
-  Globe,
-  Smartphone,
-  PenTool,
-  LineChart,
-  Layers,
+  ChevronRight,
 } from "lucide-react";
 
 interface SubService {
-  icon: React.ReactNode;
   label: string;
   href?: string;
 }
 
-interface Pillar {
+interface ServiceNode {
   id: string;
   label: string;
+  icon: React.ElementType;
   subServices: SubService[];
 }
 
-const PILLARS: Pillar[] = [
+const SERVICES: ServiceNode[] = [
   {
     id: "strategy",
     label: "Strategy & Intel",
+    icon: Brain,
     subServices: [
-      { icon: <TrendingUp size={20} />, label: "Brand Positioning" },
-      { icon: <Search size={20} />, label: "Competitive Intel" },
-      { icon: <MapPin size={20} />, label: "GEO Audit" },
-      { icon: <BarChart3 size={20} />, label: "Market Analysis" },
+      { label: "Brand Positioning" },
+      { label: "Competitive Intel" },
+      { label: "GEO Audit" },
+      { label: "Market Analysis" },
     ],
   },
   {
     id: "creative",
     label: "Content & Creative",
+    icon: Paintbrush,
     subServices: [
-      { icon: <Paintbrush size={20} />, label: "Ad Creative" },
-      { icon: <Video size={20} />, label: "Video & Motion" },
-      { icon: <FileText size={20} />, label: "Social Content" },
-      { icon: <PenTool size={20} />, label: "Copywriting" },
+      { label: "Ad Creative" },
+      { label: "Video & Motion" },
+      { label: "Social Content" },
+      { label: "Copywriting" },
     ],
   },
   {
     id: "paid",
     label: "Paid Media",
+    icon: Target,
     subServices: [
-      { icon: <Target size={20} />, label: "Google Ads" },
-      { icon: <Megaphone size={20} />, label: "Meta Ads" },
-      { icon: <Globe size={20} />, label: "LinkedIn Ads" },
-      { icon: <LineChart size={20} />, label: "Performance" },
+      { label: "Google Ads" },
+      { label: "Meta Ads" },
+      { label: "LinkedIn Ads" },
+      { label: "Performance" },
     ],
   },
   {
     id: "email",
     label: "Email & Lifecycle",
+    icon: Mail,
     subServices: [
-      { icon: <Mail size={20} />, label: "Email Sequences" },
-      { icon: <Smartphone size={20} />, label: "SMS Marketing" },
-      { icon: <Layers size={20} />, label: "Lifecycle Flows" },
+      { label: "Email Sequences" },
+      { label: "SMS Marketing" },
+      { label: "Lifecycle Flows" },
     ],
   },
   {
     id: "web",
     label: "Web & Dev",
+    icon: Code,
     subServices: [
-      { icon: <Code size={20} />, label: "Landing Pages" },
-      { icon: <Palette size={20} />, label: "CRO & Testing" },
-      { icon: <Brain size={20} />, label: "Custom Builds" },
+      { label: "Landing Pages" },
+      { label: "CRO & Testing" },
+      { label: "Custom Builds" },
     ],
   },
 ];
 
-// Position satellites around the circle (top, then clockwise)
-const POSITIONS = [
-  { angle: -90, x: 0, y: -1 },     // top
-  { angle: -18, x: 0.95, y: -0.31 }, // top-right
-  { angle: 54, x: 0.59, y: 0.81 },   // bottom-right
-  { angle: 126, x: -0.59, y: 0.81 }, // bottom-left
-  { angle: 198, x: -0.95, y: -0.31 },// top-left
-];
-
 export default function ServiceWheel() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [time, setTime] = useState(0);
+  const animRef = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const centerRadius = 160;
-  const orbitRadius = 220;
-  const satelliteRadius = 56;
+  // Organic floating animation
+  useEffect(() => {
+    const animate = () => {
+      setTime((t) => t + 0.004);
+      animRef.current = requestAnimationFrame(animate);
+    };
+    animRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animRef.current);
+  }, []);
+
+  // Close on background click
+  const handleBgClick = (e: React.MouseEvent) => {
+    if (e.target === containerRef.current) {
+      setActiveId(null);
+    }
+  };
+
+  const getNodePosition = (index: number, total: number) => {
+    if (activeId) {
+      const activeIndex = SERVICES.findIndex((s) => s.id === activeId);
+      if (index === activeIndex) {
+        // Active node goes to center
+        return { x: 0, y: 0, scale: 1.3 };
+      }
+      // Others spread out in a wider arc below
+      const otherIndices = Array.from({ length: total }, (_, i) => i).filter(
+        (i) => i !== activeIndex
+      );
+      const pos = otherIndices.indexOf(index);
+      const spread = 280;
+      const startX = -((otherIndices.length - 1) * spread) / 2;
+      return {
+        x: startX + pos * spread,
+        y: 220,
+        scale: 0.7,
+      };
+    }
+
+    // Organic floating positions
+    const baseAngle = (index / total) * Math.PI * 2 - Math.PI / 2;
+    const radius = 180;
+    // Each node has slightly different drift speed/phase
+    const drift = Math.sin(time * (1 + index * 0.3) + index * 1.5) * 12;
+    const driftY = Math.cos(time * (0.8 + index * 0.2) + index * 2) * 10;
+
+    return {
+      x: Math.cos(baseAngle) * (radius + drift),
+      y: Math.sin(baseAngle) * (radius + driftY),
+      scale: 1,
+    };
+  };
 
   return (
-    <div className="wheel-container">
-      {/* Orbital rings */}
-      <svg
-        className="wheel-orbits"
-        viewBox="-350 -350 700 700"
-        fill="none"
-      >
-        {/* Outer dotted ring */}
-        <circle
-          cx={0}
-          cy={0}
-          r={orbitRadius + satelliteRadius + 30}
-          stroke="rgba(255,255,255,0.08)"
-          strokeWidth={1}
-          strokeDasharray="4 6"
-        />
-        {/* Inner dotted ring */}
-        <circle
-          cx={0}
-          cy={0}
-          r={orbitRadius - 20}
-          stroke="rgba(255,255,255,0.05)"
-          strokeWidth={1}
-          strokeDasharray="3 8"
-        />
-        {/* Connecting lines from satellites to center */}
-        {PILLARS.map((_, i) => {
-          const pos = POSITIONS[i];
-          return (
-            <line
-              key={i}
-              x1={0}
-              y1={0}
-              x2={pos.x * orbitRadius}
-              y2={pos.y * orbitRadius}
-              stroke={
-                i === activeIndex
-                  ? "rgba(168,85,247,0.3)"
-                  : "rgba(255,255,255,0.06)"
-              }
-              strokeWidth={1}
-              strokeDasharray="4 4"
-            />
-          );
-        })}
-      </svg>
+    <div
+      ref={containerRef}
+      className="sw-container"
+      onClick={handleBgClick}
+    >
+      {/* Center glow */}
+      {!activeId && (
+        <div className="sw-center-glow" />
+      )}
 
-      {/* Center circle — shows active pillar's sub-services */}
-      <div className="wheel-center">
-        <div className="wheel-center-inner">
-          {PILLARS[activeIndex].subServices.map((sub, i) => (
-            <button
-              key={i}
-              className="wheel-sub-service"
-              onClick={() => {
-                if (sub.href) window.location.href = sub.href;
-              }}
-            >
-              <span className="wheel-sub-icon">{sub.icon}</span>
-              <span className="wheel-sub-label">{sub.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Orbital ring */}
+      {!activeId && (
+        <svg className="sw-orbit-ring" viewBox="-250 -250 500 500">
+          <circle
+            cx={0}
+            cy={0}
+            r={180}
+            fill="none"
+            stroke="rgba(255,255,255,0.06)"
+            strokeWidth={1}
+            strokeDasharray="6 10"
+          />
+        </svg>
+      )}
 
-      {/* Satellite circles */}
-      {PILLARS.map((pillar, i) => {
-        const pos = POSITIONS[i];
-        const isActive = i === activeIndex;
-        const x = pos.x * orbitRadius;
-        const y = pos.y * orbitRadius;
+      {/* Nodes */}
+      {SERVICES.map((service, i) => {
+        const pos = getNodePosition(i, SERVICES.length);
+        const isActive = activeId === service.id;
+        const Icon = service.icon;
 
         return (
-          <button
-            key={pillar.id}
-            className={`wheel-satellite ${isActive ? "active" : ""}`}
+          <div
+            key={service.id}
+            className={`sw-node ${isActive ? "active" : ""} ${activeId && !isActive ? "inactive" : ""}`}
             style={{
-              transform: `translate(${x}px, ${y}px)`,
+              transform: `translate(${pos.x}px, ${pos.y}px) scale(${pos.scale})`,
+              zIndex: isActive ? 20 : 5,
             }}
-            onClick={() => setActiveIndex(i)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveId(isActive ? null : service.id);
+            }}
           >
-            <span className="wheel-satellite-label">{pillar.label}</span>
-            <span className="wheel-satellite-toggle">
-              {isActive ? "−" : "+"}
-            </span>
-          </button>
+            {/* Glass circle */}
+            <div className="sw-node-circle">
+              <Icon size={isActive ? 22 : 18} strokeWidth={1.5} />
+            </div>
+            <span className="sw-node-label">{service.label}</span>
+
+            {/* Glass dropdown */}
+            {isActive && (
+              <div className="sw-dropdown">
+                {service.subServices.map((sub, j) => (
+                  <button
+                    key={j}
+                    className="sw-dropdown-item"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Navigate to service page when wired up
+                    }}
+                  >
+                    <span>{sub.label}</span>
+                    <ChevronRight size={14} className="sw-dropdown-arrow" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         );
       })}
     </div>
