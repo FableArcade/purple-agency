@@ -186,22 +186,35 @@ export function Component() {
       }
       containerRef.current!.querySelector(".slider-wrapper")!.classList.add("loaded");
 
-      // --- MOBILE: use CSS background instead of WebGL between transitions ---
+      // --- MOBILE: use CSS background instead of WebGL ---
       const mobileBg = containerRef.current!.querySelector(".mobile-bg") as HTMLElement;
+      const mobileBgNext = containerRef.current!.querySelector(".mobile-bg-next") as HTMLElement;
       const canvasEl = canvas;
 
       const showMobileBg = (slideIdx: number) => {
         if (!isMobile || !mobileBg) return;
         mobileBg.style.backgroundImage = `url(${SLIDES[slideIdx].media})`;
         mobileBg.style.opacity = "1";
-        canvasEl.style.opacity = "0";
+        mobileBg.style.transform = "scale(1)";
       };
 
-      const hideMobileBg = () => {
-        if (!isMobile || !mobileBg) return;
-        mobileBg.style.opacity = "0";
-        canvasEl.style.opacity = "1";
-      };
+      // Scroll-driven zoom parallax for mobile
+      if (isMobile) {
+        let lastY = 0;
+        let currentScale = 1;
+
+        const onMobileScroll = () => {
+          const delta = window.scrollY - lastY;
+          lastY = window.scrollY;
+          // Zoom in when scrolling down, out when scrolling up
+          if (delta > 0) currentScale = Math.min(1.08, currentScale + 0.003);
+          else if (delta < 0) currentScale = Math.max(0.97, currentScale - 0.003);
+          // Decay back to 1
+          currentScale += (1 - currentScale) * 0.03;
+          if (mobileBg) mobileBg.style.transform = `scale(${currentScale})`;
+        };
+        window.addEventListener("scroll", onMobileScroll, { passive: true });
+      }
 
       // --- RENDER ---
       let animating = false;
@@ -251,24 +264,32 @@ export function Component() {
         }, duration * 400);
 
         if (isMobile) {
-          // MOBILE: pure CSS crossfade — no WebGL
-          const mobileBgNext = containerRef.current!.querySelector(".mobile-bg-next") as HTMLElement;
+          // MOBILE: pure CSS crossfade
           if (mobileBgNext) {
+            // Reset next layer instantly (no transition)
+            mobileBgNext.style.transition = "none";
+            mobileBgNext.style.opacity = "0";
             mobileBgNext.style.backgroundImage = `url(${SLIDES[idx].media})`;
+            mobileBgNext.style.transform = "scale(1)";
+
+            // Force reflow then fade in
+            void mobileBgNext.offsetHeight;
+            mobileBgNext.style.transition = "opacity 1s ease";
             mobileBgNext.style.opacity = "1";
           }
           setTimeout(() => {
+            // Swap: set base layer to new image, hide next layer instantly
             if (mobileBg) {
               mobileBg.style.backgroundImage = `url(${SLIDES[idx].media})`;
+              mobileBg.style.transform = "scale(1)";
             }
             if (mobileBgNext) {
               mobileBgNext.style.transition = "none";
               mobileBgNext.style.opacity = "0";
-              setTimeout(() => { mobileBgNext.style.transition = "opacity 0.8s ease"; }, 50);
             }
             currentSlide = idx;
             isAnimating = false;
-          }, 800);
+          }, 1100);
         } else {
           // DESKTOP: WebGL ripple transition
           if (!textures[idx]) return;

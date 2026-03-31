@@ -355,6 +355,9 @@
   background-size: cover;
   background-position: center;
   opacity: 0;
+  will-change: transform;
+  transform: scale(1);
+  transition: transform 0.6s ease-out;
 }
 
 .mobile-bg {
@@ -363,7 +366,7 @@
 
 .mobile-bg-next {
   z-index: 1;
-  transition: opacity 0.8s ease;
+  transition: opacity 1s ease, transform 0.6s ease-out;
 }
 
 .webgl-canvas {
