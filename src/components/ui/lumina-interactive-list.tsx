@@ -198,22 +198,31 @@ export function Component() {
         mobileBg.style.transform = "scale(1)";
       };
 
-      // Scroll-driven zoom parallax for mobile
-      if (isMobile) {
-        let lastY = 0;
-        let currentScale = 1;
+      // Scroll-driven zoom parallax
+      {
+        let lastY = window.scrollY;
+        let scaleTarget = 1;
+        let scaleCurrent = 1;
 
-        const onMobileScroll = () => {
+        const onZoomScroll = () => {
+          if (isAnimating) return;
           const delta = window.scrollY - lastY;
           lastY = window.scrollY;
-          // Zoom in when scrolling down, out when scrolling up
-          if (delta > 0) currentScale = Math.min(1.08, currentScale + 0.003);
-          else if (delta < 0) currentScale = Math.max(0.97, currentScale - 0.003);
-          // Decay back to 1
-          currentScale += (1 - currentScale) * 0.03;
-          if (mobileBg) mobileBg.style.transform = `scale(${currentScale})`;
+          if (Math.abs(delta) > 1) {
+            scaleTarget = delta > 0 ? 1.06 : 0.96;
+          }
         };
-        window.addEventListener("scroll", onMobileScroll, { passive: true });
+        window.addEventListener("scroll", onZoomScroll, { passive: true });
+
+        const zoomTick = () => {
+          requestAnimationFrame(zoomTick);
+          scaleCurrent += (scaleTarget - scaleCurrent) * 0.04;
+          scaleTarget += (1 - scaleTarget) * 0.01;
+          if (isMobile && mobileBg) {
+            mobileBg.style.transform = `scale(${scaleCurrent})`;
+          }
+        };
+        zoomTick();
       }
 
       // --- RENDER ---
