@@ -186,20 +186,9 @@ export function Component() {
       }
       containerRef.current!.querySelector(".slider-wrapper")!.classList.add("loaded");
 
-      // --- MOBILE: use CSS background instead of WebGL ---
-      const mobileBg = containerRef.current!.querySelector(".mobile-bg") as HTMLElement;
-      const mobileBgNext = containerRef.current!.querySelector(".mobile-bg-next") as HTMLElement;
       const canvasEl = canvas;
 
-      const showMobileBg = (slideIdx: number) => {
-        if (!isMobile || !mobileBg) return;
-        mobileBg.style.backgroundImage = `url(${SLIDES[slideIdx].media})`;
-        mobileBg.style.opacity = "1";
-        mobileBg.style.transform = "scale(1)";
-        zoomLastY = window.scrollY;
-      };
-
-      // Scroll-driven zoom — only zooms IN, never below 1.0
+      // Scroll-driven zoom via CSS transform on canvas
       let zoomScale = 1;
       let zoomLastY = window.scrollY;
 
@@ -215,11 +204,10 @@ export function Component() {
 
       const zoomTick = () => {
         requestAnimationFrame(zoomTick);
-        // Always decay toward 1.0
         zoomScale += (1.0 - zoomScale) * 0.02;
         if (zoomScale < 1.001) zoomScale = 1;
-        if (isMobile && mobileBg && !isAnimating) {
-          mobileBg.style.transform = `scale(${zoomScale})`;
+        if (!isAnimating) {
+          canvasEl.style.transform = `scale(${zoomScale})`;
         }
       };
       zoomTick();
@@ -243,13 +231,9 @@ export function Component() {
       };
       const stopRenderLoop = () => { animating = false; };
 
-      // Initial state
-      if (isMobile) {
-        showMobileBg(0);
-        canvasEl.style.display = "none";
-        canvasEl.style.opacity = "0";
-      } else {
-        renderer.render(scene, camera);
+      // Initial render
+      renderer.render(scene, camera);
+      if (!isMobile) {
         animating = true;
         renderLoop();
       }
@@ -273,7 +257,6 @@ export function Component() {
         }, duration * 400);
 
         if (isMobile) {
-          // MOBILE: WebGL ripple on canvas, then swap to CSS bg
           if (!textures[idx]) { isAnimating = false; return; }
 
           shaderMat.uniforms.uDirection.value = idx > currentSlide ? 1 : -1;
@@ -282,15 +265,8 @@ export function Component() {
           shaderMat.uniforms.uTex2.value = textures[idx];
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
-          // Reset zoom to 1 before showing canvas
           zoomScale = 1;
-          mobileBg.style.transform = "scale(1)";
-
-          // Show canvas on top
-          canvasEl.style.display = "block";
-          canvasEl.style.transition = "none";
-          canvasEl.style.opacity = "1";
-          renderer.render(scene, camera);
+          canvasEl.style.transform = "scale(1)";
           startRenderLoop();
 
           gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
@@ -299,23 +275,12 @@ export function Component() {
               shaderMat.uniforms.uProgress.value = 0;
               shaderMat.uniforms.uTex1.value = textures[idx];
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
-
-              // Set CSS bg to new image underneath
-              mobileBg.style.backgroundImage = `url(${SLIDES[idx].media})`;
-              mobileBg.style.opacity = "1";
-              mobileBg.style.transform = "scale(1)";
-
-              // Double rAF to ensure CSS bg painted before hiding canvas
-              requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                  canvasEl.style.opacity = "0";
-                  canvasEl.style.display = "none";
-                  stopRenderLoop();
-                  currentSlide = idx;
-                  isAnimating = false;
-                  zoomLastY = window.scrollY;
-                });
-              });
+              // Render final frame and stop loop
+              renderer.render(scene, camera);
+              stopRenderLoop();
+              currentSlide = idx;
+              isAnimating = false;
+              zoomLastY = window.scrollY;
             },
           });
         } else {
