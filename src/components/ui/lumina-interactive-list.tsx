@@ -199,31 +199,36 @@ export function Component() {
       };
 
       // Scroll-driven zoom parallax
-      {
-        let lastY = window.scrollY;
-        let scaleTarget = 1;
-        let scaleCurrent = 1;
+      let zoomScaleTarget = 1;
+      let zoomScaleCurrent = 1;
+      let zoomLastY = window.scrollY;
 
-        const onZoomScroll = () => {
-          if (isAnimating) return;
-          const delta = window.scrollY - lastY;
-          lastY = window.scrollY;
-          if (Math.abs(delta) > 1) {
-            scaleTarget = delta > 0 ? 1.06 : 0.96;
-          }
-        };
-        window.addEventListener("scroll", onZoomScroll, { passive: true });
+      const resetZoom = () => {
+        zoomScaleTarget = 1;
+        zoomScaleCurrent = 1;
+        if (mobileBg) mobileBg.style.transform = "scale(1)";
+      };
 
-        const zoomTick = () => {
-          requestAnimationFrame(zoomTick);
-          scaleCurrent += (scaleTarget - scaleCurrent) * 0.04;
-          scaleTarget += (1 - scaleTarget) * 0.01;
-          if (isMobile && mobileBg) {
-            mobileBg.style.transform = `scale(${scaleCurrent})`;
-          }
-        };
-        zoomTick();
-      }
+      const onZoomScroll = () => {
+        if (isAnimating) return;
+        const delta = window.scrollY - zoomLastY;
+        zoomLastY = window.scrollY;
+        if (Math.abs(delta) > 1) {
+          zoomScaleTarget = delta > 0 ? 1.06 : 0.96;
+        }
+      };
+      window.addEventListener("scroll", onZoomScroll, { passive: true });
+
+      const zoomTick = () => {
+        requestAnimationFrame(zoomTick);
+        if (isAnimating) return;
+        zoomScaleCurrent += (zoomScaleTarget - zoomScaleCurrent) * 0.04;
+        zoomScaleTarget += (1 - zoomScaleTarget) * 0.01;
+        if (isMobile && mobileBg) {
+          mobileBg.style.transform = `scale(${zoomScaleCurrent})`;
+        }
+      };
+      zoomTick();
 
       // --- RENDER ---
       let animating = false;
@@ -258,6 +263,7 @@ export function Component() {
       const goToSlide = (idx: number, duration = 0.9) => {
         if (isAnimating || idx === currentSlide) return;
         isAnimating = true;
+        resetZoom();
 
         // Update nav
         document.querySelectorAll(".slide-nav-item").forEach((el, i) => {
