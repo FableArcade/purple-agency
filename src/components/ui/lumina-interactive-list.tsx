@@ -293,9 +293,13 @@ export function Component() {
           shaderMat.uniforms.uTex2.value = textures[idx];
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
-          // Show canvas
+          // Show canvas immediately — render first frame sync
           canvasEl.style.display = "block";
+          renderer.render(scene, camera);
+          canvasEl.style.transition = "none";
           canvasEl.style.opacity = "1";
+          // Hide CSS bg so canvas is fully visible
+          mobileBg.style.opacity = "0";
           startRenderLoop();
 
           gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
@@ -306,11 +310,10 @@ export function Component() {
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
               // Swap to CSS bg, hide canvas
               showMobileBg(idx);
+              canvasEl.style.transition = "none";
               canvasEl.style.opacity = "0";
-              setTimeout(() => {
-                canvasEl.style.display = "none";
-                stopRenderLoop();
-              }, 200);
+              canvasEl.style.display = "none";
+              stopRenderLoop();
               currentSlide = idx;
               isAnimating = false;
             },
