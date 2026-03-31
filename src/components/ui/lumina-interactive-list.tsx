@@ -229,10 +229,9 @@ export function Component() {
         });
 
         // Scroll to matching section
-        const sectionH = window.innerHeight * 2;
+        const sectionH = window.innerHeight * 3;
         ignoreScroll = true;
         window.scrollTo({ top: idx * sectionH + sectionH * 0.5, behavior: "auto" });
-        lastScrollSection = idx;
         setTimeout(() => { ignoreScroll = false; }, 500);
       };
 
@@ -253,29 +252,32 @@ export function Component() {
       document.getElementById("slideTotal")!.textContent = String(SLIDES.length).padStart(2, "0");
 
       // --- SCROLL DRIVEN ---
-      const SECTION_H = () => window.innerHeight * 2;
+      const SECTION_H = () => window.innerHeight * 3;
 
-      let lastScrollSection = 0;
       let ignoreScroll = false;
 
       const onScroll = () => {
         if (isAnimating || ignoreScroll) return;
         const scrollY = window.scrollY;
         const sH = SECTION_H();
-        // Use simple division — each section is sH tall
-        const section = Math.min(Math.floor(scrollY / sH), SLIDES.length - 1);
+        const centerOfSection = currentSlide * sH + sH * 0.5;
+        const distFromCenter = scrollY - centerOfSection;
 
-        if (section !== lastScrollSection && section !== currentSlide) {
-          goToSlide(section, 0.9);
-          // After transition, snap scroll to center of new section
-          ignoreScroll = true;
-          setTimeout(() => {
-            window.scrollTo({ top: section * sH + sH * 0.5, behavior: "auto" });
-            lastScrollSection = section;
-            setTimeout(() => { ignoreScroll = false; }, 100);
-          }, 1000);
+        // Only trigger when user scrolls past 40% of a section from center
+        if (Math.abs(distFromCenter) > sH * 0.4) {
+          const nextSlide = distFromCenter > 0
+            ? Math.min(currentSlide + 1, SLIDES.length - 1)
+            : Math.max(currentSlide - 1, 0);
+
+          if (nextSlide !== currentSlide) {
+            goToSlide(nextSlide, 0.9);
+            ignoreScroll = true;
+            setTimeout(() => {
+              window.scrollTo({ top: nextSlide * sH + sH * 0.5, behavior: "auto" });
+              setTimeout(() => { ignoreScroll = false; }, 200);
+            }, 1000);
+          }
         }
-        lastScrollSection = section;
       };
       window.addEventListener("scroll", onScroll, { passive: true });
 
