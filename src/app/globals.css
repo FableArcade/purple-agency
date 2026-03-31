@@ -4,6 +4,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes moveBackground {
+  from { background-position: 0% 0%; }
+  to { background-position: 0% -1000%; }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -355,48 +360,45 @@
 
 .scroll-section-inner {
   position: sticky;
-  top: 30vh;
-  max-width: 380px;
-  padding: 2rem;
-  margin-left: auto;
-  margin-right: 5vw;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 900px;
+  padding: 2.5rem;
+  margin: 0 auto;
+  text-align: center;
 }
 
-.slider-scroll-section:nth-child(even) .scroll-section-inner {
-  margin-left: 5vw;
-  margin-right: auto;
+.scroll-section-work {
+  position: sticky;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  pointer-events: auto;
+  text-align: center;
 }
 
 .scroll-section-label {
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.2em;
-  color: rgba(255, 255, 255, 0.3);
-  display: block;
-  margin-bottom: 1rem;
+  display: none;
 }
 
 .scroll-section-heading {
   font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 1rem 0;
-  line-height: 1.2;
+  color: #fff;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 .scroll-section-text {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: clamp(0.85rem, 1.1vw, 1rem);
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
   font-weight: 300;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
+  white-space: pre-line;
 }
 
 .slide-number {
@@ -422,12 +424,7 @@
 }
 
 .slide-content {
-  position: absolute;
-  bottom: 6rem;
-  left: 2.5rem;
-  z-index: 2;
-  max-width: 500px;
-  pointer-events: auto;
+  display: none;
 }
 
 .slide-title {
@@ -447,7 +444,7 @@
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.55);
   margin: 0;
-  max-width: 380px;
+  white-space: nowrap;
 }
 
 .slides-navigation {
@@ -492,7 +489,7 @@
 .slide-progress-fill {
   height: 100%;
   width: 0%;
-  background: rgba(255, 255, 255, 0.8);
+  background: #a855f7;
   transition: width 0.1s ease, opacity 0.3s ease;
 }
 
@@ -503,4 +500,61 @@
   color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
   white-space: nowrap;
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 768px) {
+  .slides-navigation {
+    gap: 0.75rem;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    justify-content: center;
+  }
+
+  .slide-nav-item {
+    min-width: 50px;
+  }
+
+  .slide-nav-title {
+    font-size: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .scroll-section-inner {
+    max-width: 100%;
+    padding: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .scroll-section-heading {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    white-space: normal;
+  }
+
+  .scroll-section-text {
+    font-size: 0.9rem;
+  }
+
+  .slide-description {
+    white-space: normal;
+    font-size: 0.8rem;
+  }
+
+  .slide-number,
+  .slide-total {
+    right: 1rem;
+  }
+
+  .scroll-section-work {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 1rem;
+  }
+
+  .lumina-slider-root {
+    overflow-x: hidden;
+  }
 }

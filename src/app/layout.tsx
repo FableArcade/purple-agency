@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Midhaven — AI Ad Agency",
+  title: "Purple — AI Ad Agency",
   description: "AI-powered advertising that transcends the boundaries of what's possible",
 };
 

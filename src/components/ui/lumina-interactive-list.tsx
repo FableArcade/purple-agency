@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import ExpandOnHover from "@/components/ui/expand-cards";
 
 declare const gsap: any;
 declare const THREE: any;
@@ -8,12 +9,12 @@ declare const THREE: any;
 const SLIDES = [
   {
     nav: "Home",
-    title: "Midhaven",
+    title: "Purple",
     description: "AI-powered advertising that transcends the boundaries of what's possible.",
     media: "https://assets.codepen.io/7558/orange-portrait-001.jpg",
     content: {
-      heading: "Welcome to Midhaven",
-      body: "We are an AI-first creative agency building the future of advertising. Our technology blends machine intelligence with human artistry to produce campaigns that resonate deeply with audiences worldwide.",
+      heading: "Welcome to Purple",
+      body: "We are an AI-first creative agency building the future of advertising.\nOur technology blends machine intelligence with human artistry to produce campaigns that resonate deeply with audiences worldwide.",
     },
   },
   {
@@ -22,8 +23,8 @@ const SLIDES = [
     description: "Born from the intersection of creativity and artificial intelligence.",
     media: "https://assets.codepen.io/7558/orange-portrait-002.jpg",
     content: {
-      heading: "About Midhaven",
-      body: "Founded in 2024, Midhaven emerged from a simple belief: the best advertising doesn't just sell — it moves people. Our team of strategists, designers, and AI engineers work together to craft campaigns that feel both deeply human and impossibly precise.",
+      heading: "About Purple",
+      body: "Founded in 2026, Purple emerged from a simple belief: the best advertising doesn't just sell — it moves people. Our team of strategists, designers, and AI engineers work together to craft campaigns that feel both deeply human and impossibly precise.",
     },
   },
   {
@@ -225,7 +226,7 @@ export function Component() {
 
         // Scroll to matching section
         const sectionH = window.innerHeight * 2;
-        window.scrollTo({ top: idx * sectionH + 1, behavior: "smooth" });
+        window.scrollTo({ top: idx * sectionH + sectionH * 0.25, behavior: "smooth" });
       };
 
       // --- NAV ---
@@ -297,11 +298,17 @@ export function Component() {
       <div className="slider-scroll-spacer">
         {SLIDES.map((sl, i) => (
           <div key={i} className="slider-scroll-section">
-            <div className="scroll-section-inner">
-              <span className="scroll-section-label">{sl.nav}</span>
-              <h2 className="scroll-section-heading">{sl.content.heading}</h2>
-              <p className="scroll-section-text">{sl.content.body}</p>
-            </div>
+            {i === 2 ? (
+              <div className="scroll-section-work">
+                <ExpandOnHover />
+              </div>
+            ) : (
+              <div className="scroll-section-inner">
+                <span className="scroll-section-label">{sl.nav}</span>
+                <h2 className="scroll-section-heading">{sl.content.heading}</h2>
+                <p className="scroll-section-text" dangerouslySetInnerHTML={{ __html: sl.content.body.replace(/\n/g, '<br />') }} />
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -422,12 +422,12 @@ export const Component = () => {
           <span></span>
           <span></span>
         </div>
-        <div className="vertical-text">MIDHAVEN</div>
+        <div className="vertical-text">PURPLE</div>
       </div>
 
       <div className="hero-content cosmos-content">
         <h1 ref={titleRef} className="hero-title">
-          {"MIDHAVEN".split("").map((char, i) => (
+          {"PURPLE".split("").map((char, i) => (
             <span key={i} className="title-char">{char}</span>
           ))}
         </h1>
