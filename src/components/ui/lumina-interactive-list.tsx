@@ -93,7 +93,7 @@ export function Component() {
       const vertSrc = `varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0); }`;
       const fragSrc = `
         uniform sampler2D uTex1, uTex2;
-        uniform float uProgress, uDirection;
+        uniform float uProgress, uDirection, uMobile;
         uniform vec2 uRes, uTex1Size, uTex2Size, uMouse;
         varying vec2 vUv;
 
@@ -104,37 +104,45 @@ export function Component() {
         }
 
         void main(){
-          float p=uProgress, d=uDirection;
+          float p=uProgress;
           vec2 mOff=uMouse*0.03;
 
-          // Gentle slide — just enough to feel directional
-          float p1=smoothstep(0.0,0.5,p);
-          float p2=smoothstep(0.5,1.0,p);
-          float slideOut=p1*0.08*d;
-          float slideIn=(1.0-p2)*0.08*d;
+          vec2 uv1=coverUV(vUv,uTex1Size)+mOff;
+          vec2 uv2=coverUV(vUv,uTex2Size)+mOff*0.6;
 
-          vec2 uv1=coverUV(vUv+vec2(0.0,slideOut),uTex1Size)+mOff;
-          vec2 uv2=coverUV(vUv-vec2(0.0,slideIn),uTex2Size)+mOff*0.6;
-
-          // Ripple
-          vec2 c=vec2(0.5);
-          float dist=length(vUv-c);
-          float wave=sin(dist*24.0-p*12.0)*0.05;
-          float wf=p*1.4;
-          wave*=exp(-pow(dist-wf,2.0)*8.0);
-          wave*=smoothstep(0.0,0.15,p)*smoothstep(1.0,0.85,p);
-
-          vec2 rd=(dist>0.0)?normalize(vUv-c):vec2(0.0);
-          uv1+=rd*wave; uv2+=rd*wave*0.5;
-          float ab=wave*0.3;
-
-          vec4 col;
-          if(p<0.5){
-            col=vec4(texture2D(uTex1,uv1+rd*ab).r, texture2D(uTex1,uv1).g, texture2D(uTex1,uv1-rd*ab).b, 1.0);
+          if(uMobile>0.5){
+            // Mobile: clean crossfade, no distortion
+            float fade=smoothstep(0.0,1.0,p);
+            vec4 c1=texture2D(uTex1,uv1);
+            vec4 c2=texture2D(uTex2,uv2);
+            gl_FragColor=mix(c1,c2,fade);
           } else {
-            col=vec4(texture2D(uTex2,uv2+rd*ab*.3).r, texture2D(uTex2,uv2).g, texture2D(uTex2,uv2-rd*ab*.3).b, 1.0);
+            // Desktop: ripple + slide + chromatic aberration
+            float d=uDirection;
+            float p1=smoothstep(0.0,0.5,p);
+            float p2=smoothstep(0.5,1.0,p);
+            uv1+=vec2(0.0,p1*0.08*d);
+            uv2-=vec2(0.0,(1.0-p2)*0.08*d);
+
+            vec2 c=vec2(0.5);
+            float dist=length(vUv-c);
+            float wave=sin(dist*24.0-p*12.0)*0.05;
+            float wf=p*1.4;
+            wave*=exp(-pow(dist-wf,2.0)*8.0);
+            wave*=smoothstep(0.0,0.15,p)*smoothstep(1.0,0.85,p);
+
+            vec2 rd=(dist>0.0)?normalize(vUv-c):vec2(0.0);
+            uv1+=rd*wave; uv2+=rd*wave*0.5;
+            float ab=wave*0.3;
+
+            vec4 col;
+            if(p<0.5){
+              col=vec4(texture2D(uTex1,uv1+rd*ab).r,texture2D(uTex1,uv1).g,texture2D(uTex1,uv1-rd*ab).b,1.0);
+            } else {
+              col=vec4(texture2D(uTex2,uv2+rd*ab*.3).r,texture2D(uTex2,uv2).g,texture2D(uTex2,uv2-rd*ab*.3).b,1.0);
+            }
+            gl_FragColor=col;
           }
-          gl_FragColor=col;
         }
       `;
 
@@ -155,6 +163,7 @@ export function Component() {
           uTex1Size: { value: new THREE.Vector2(1, 1) },
           uTex2Size: { value: new THREE.Vector2(1, 1) },
           uMouse: { value: new THREE.Vector2(0, 0) },
+          uMobile: { value: isMobile ? 1.0 : 0.0 },
         },
         vertexShader: vertSrc, fragmentShader: fragSrc,
       });
