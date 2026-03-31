@@ -117,13 +117,7 @@ export function Component() {
             vec2 muv2=coverUV(vUv,uTex2Size);
             gl_FragColor=mix(texture2D(uTex1,muv1),texture2D(uTex2,muv2),fade);
           } else {
-            // Desktop: ripple + slide + chromatic aberration
-            float d=uDirection;
-            float p1=smoothstep(0.0,0.5,p);
-            float p2=smoothstep(0.5,1.0,p);
-            uv1+=vec2(0.0,p1*0.08*d);
-            uv2-=vec2(0.0,(1.0-p2)*0.08*d);
-
+            // Desktop: ripple + chromatic aberration (no slide)
             vec2 c=vec2(0.5);
             float dist=length(vUv-c);
             float wave=sin(dist*24.0-p*12.0)*0.05;
@@ -188,35 +182,7 @@ export function Component() {
 
       const canvasEl = canvas;
 
-      // Scroll-driven zoom via CSS transform on canvas
-      let zoomScale = 1;
-      let zoomLastY = window.scrollY;
-
-      const onZoomScroll = () => {
-        if (isAnimating || locked) return;
-        // Freeze zoom when close to transition boundary
-        const sH = SECTION_H();
-        const center = currentSlide * sH + sH * 0.5;
-        const dist = Math.abs(window.scrollY - center);
-        if (dist > sH * 0.2) return; // approaching boundary, stop zooming
-
-        const delta = window.scrollY - zoomLastY;
-        zoomLastY = window.scrollY;
-        if (Math.abs(delta) > 2) {
-          zoomScale = Math.min(1.03, zoomScale + Math.abs(delta) * 0.0003);
-        }
-      };
-      window.addEventListener("scroll", onZoomScroll, { passive: true });
-
-      const zoomTick = () => {
-        requestAnimationFrame(zoomTick);
-        zoomScale += (1.0 - zoomScale) * 0.06;
-        if (zoomScale < 1.001) zoomScale = 1;
-        if (!isAnimating) {
-          canvasEl.style.transform = `scale(${zoomScale})`;
-        }
-      };
-      zoomTick();
+      // No zoom — keep canvas at scale(1) always
 
       // --- RENDER ---
       let animating = false;
@@ -271,10 +237,6 @@ export function Component() {
           shaderMat.uniforms.uTex2.value = textures[idx];
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
-          zoomScale = 1;
-          canvasEl.style.transition = "transform 0.15s ease-out";
-          canvasEl.style.transform = "scale(1)";
-          setTimeout(() => { canvasEl.style.transition = ""; }, 200);
           startRenderLoop();
 
           gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
@@ -288,13 +250,10 @@ export function Component() {
               stopRenderLoop();
               currentSlide = idx;
               isAnimating = false;
-              zoomLastY = window.scrollY;
             },
           });
         } else {
           // DESKTOP: WebGL ripple transition
-          zoomScale = 1;
-          canvasEl.style.transform = "scale(1)";
           if (!textures[idx]) return;
           const dir = idx > currentSlide ? 1 : -1;
           shaderMat.uniforms.uDirection.value = dir;
