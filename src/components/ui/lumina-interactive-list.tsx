@@ -186,27 +186,11 @@ export function Component() {
       }
       containerRef.current!.querySelector(".slider-wrapper")!.classList.add("loaded");
 
-      // --- SCROLL PARALLAX ---
-      let lastScrollY = window.scrollY;
-      let scrollVelocity = 0;
-
-      const trackScroll = () => {
-        const newY = window.scrollY;
-        scrollVelocity = (newY - lastScrollY) * 0.003;
-        lastScrollY = newY;
-      };
-      window.addEventListener("scroll", trackScroll, { passive: true });
-
       // --- RENDER LOOP ---
       const render = () => {
         requestAnimationFrame(render);
-        // Desktop: mouse, Mobile: scroll velocity drives Y parallax
-        const targetX = mouse.x;
-        const targetY = mouse.y + scrollVelocity;
-        mouse.sx += (targetX - mouse.sx) * 0.06;
-        mouse.sy += (targetY - mouse.sy) * 0.06;
-        // Decay scroll velocity smoothly
-        scrollVelocity *= 0.92;
+        mouse.sx += (mouse.x - mouse.sx) * 0.05;
+        mouse.sy += (mouse.y - mouse.sy) * 0.05;
         shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
         renderer.render(scene, camera);
       };
@@ -287,13 +271,11 @@ export function Component() {
 
       const lockScroll = () => {
         locked = true;
-        document.body.style.overflow = "hidden";
       };
 
       const unlockScroll = (slideIdx: number) => {
         const sH = SECTION_H();
         window.scrollTo({ top: slideIdx * sH + sH * 0.5, behavior: "auto" });
-        document.body.style.overflow = "";
         setTimeout(() => { locked = false; }, 100);
       };
 
