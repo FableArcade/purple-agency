@@ -430,6 +430,18 @@
   pointer-events: auto;
 }
 
+/* Work section: no blur/scale transition to avoid glass conflict */
+.fixed-slide-panel:nth-child(3) {
+  transform: none;
+  filter: none;
+  transition: opacity 0.6s ease;
+}
+
+.fixed-slide-panel:nth-child(3).active {
+  transform: none;
+  filter: none;
+}
+
 .fixed-slide-text {
   max-width: 900px;
   width: 100%;
