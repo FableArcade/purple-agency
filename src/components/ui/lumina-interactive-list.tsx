@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ExpandOnHover from "@/components/ui/expand-cards";
 
 declare const gsap: any;
@@ -61,6 +61,9 @@ const SLIDES = [
 
 export function Component() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const setActiveSlideRef = useRef(setActiveSlide);
+  setActiveSlideRef.current = setActiveSlide;
 
   useEffect(() => {
     const loadScript = (src: string, globalName: string) =>
@@ -214,6 +217,7 @@ export function Component() {
             shaderMat.uniforms.uTex1.value = textures[idx];
             shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
             currentSlide = idx;
+            setActiveSlideRef.current(idx);
             isAnimating = false;
 
             // New text in
@@ -282,6 +286,7 @@ export function Component() {
 
   return (
     <div ref={containerRef} className="lumina-slider-root">
+      {/* Fixed background: canvas + WebGL */}
       <div className="slider-fixed-layer">
         <main className="slider-wrapper">
           <canvas className="webgl-canvas" />
@@ -293,23 +298,38 @@ export function Component() {
           </div>
         </main>
       </div>
-      <nav className="slides-navigation" id="slidesNav"></nav>
 
-      <div className="slider-scroll-spacer">
+      {/* Fixed center content — always visible, switches with active slide */}
+      <div className="fixed-slide-content">
         {SLIDES.map((sl, i) => (
-          <div key={i} className="slider-scroll-section">
+          <div
+            key={i}
+            className={`fixed-slide-panel ${activeSlide === i ? "active" : ""}`}
+          >
             {i === 2 ? (
-              <div className="scroll-section-work">
-                <ExpandOnHover />
-              </div>
+              <ExpandOnHover />
             ) : (
-              <div className="scroll-section-inner">
-                <span className="scroll-section-label">{sl.nav}</span>
+              <div className="fixed-slide-text">
                 <h2 className="scroll-section-heading">{sl.content.heading}</h2>
-                <p className="scroll-section-text" dangerouslySetInnerHTML={{ __html: sl.content.body.replace(/\n/g, '<br />') }} />
+                <p
+                  className="scroll-section-text"
+                  dangerouslySetInnerHTML={{
+                    __html: sl.content.body.replace(/\n/g, "<br />"),
+                  }}
+                />
               </div>
             )}
           </div>
+        ))}
+      </div>
+
+      {/* Nav */}
+      <nav className="slides-navigation" id="slidesNav"></nav>
+
+      {/* Scroll spacer — just creates scroll height, no visible content */}
+      <div className="slider-scroll-spacer">
+        {SLIDES.map((_, i) => (
+          <div key={i} className="slider-scroll-section" />
         ))}
       </div>
     </div>
