@@ -108,7 +108,7 @@ export function Component() {
           vec2 mOff=uMouse*0.03;
 
           vec2 uv1=coverUV(vUv,uTex1Size)+mOff;
-          vec2 uv2=coverUV(vUv,uTex2Size)+mOff*0.6;
+          vec2 uv2=coverUV(vUv,uTex2Size)+mOff;
 
           if(uMobile>0.5){
             // Mobile: clean crossfade, no distortion, no offset
