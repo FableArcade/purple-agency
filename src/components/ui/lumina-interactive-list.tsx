@@ -152,19 +152,14 @@ export function Component() {
       camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
       renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
       const isMobile = window.innerWidth < 768;
-      const renderW = isMobile ? Math.round(window.innerWidth * 1.1) : window.innerWidth;
-      const renderH = isMobile ? Math.round(window.innerHeight * 1.1) : window.innerHeight;
-      renderer.setSize(renderW, renderH, false); // false = don't set CSS styles
+      renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
-      // Let CSS handle the canvas sizing
-      canvas.style.width = "";
-      canvas.style.height = "";
 
       shaderMat = new THREE.ShaderMaterial({
         uniforms: {
           uTex1: { value: null }, uTex2: { value: null },
           uProgress: { value: 0 }, uDirection: { value: 1 },
-          uRes: { value: new THREE.Vector2(renderW, renderH) },
+          uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
           uTex1Size: { value: new THREE.Vector2(1, 1) },
           uTex2Size: { value: new THREE.Vector2(1, 1) },
           uMouse: { value: new THREE.Vector2(0, 0) },
