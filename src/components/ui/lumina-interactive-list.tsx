@@ -151,15 +151,18 @@ export function Component() {
       scene = new THREE.Scene();
       camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
       renderer = new THREE.WebGLRenderer({ canvas, antialias: false });
-      renderer.setSize(window.innerWidth, window.innerHeight);
       const isMobile = window.innerWidth < 768;
+      // On mobile, render at 110% to match the oversized CSS bg
+      const renderW = isMobile ? Math.round(window.innerWidth * 1.1) : window.innerWidth;
+      const renderH = isMobile ? Math.round(window.innerHeight * 1.1) : window.innerHeight;
+      renderer.setSize(renderW, renderH);
       renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 2));
 
       shaderMat = new THREE.ShaderMaterial({
         uniforms: {
           uTex1: { value: null }, uTex2: { value: null },
           uProgress: { value: 0 }, uDirection: { value: 1 },
-          uRes: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+          uRes: { value: new THREE.Vector2(renderW, renderH) },
           uTex1Size: { value: new THREE.Vector2(1, 1) },
           uTex2Size: { value: new THREE.Vector2(1, 1) },
           uMouse: { value: new THREE.Vector2(0, 0) },
@@ -254,6 +257,7 @@ export function Component() {
       if (isMobile) {
         showMobileBg(0);
         canvasEl.style.display = "none";
+        canvasEl.style.opacity = "0";
       } else {
         renderer.render(scene, camera);
         animating = true;
@@ -280,31 +284,37 @@ export function Component() {
         }, duration * 400);
 
         if (isMobile) {
-          // MOBILE: CSS crossfade with ripple filter
-          if (mobileBgNext) {
-            mobileBgNext.style.transition = "none";
-            mobileBgNext.style.opacity = "0";
-            mobileBgNext.style.backgroundImage = `url(${SLIDES[idx].media})`;
-            mobileBgNext.style.transform = "scale(1)";
-            mobileBgNext.style.filter = "url(#mobile-ripple)";
-            void mobileBgNext.offsetHeight;
-            mobileBgNext.style.transition = "opacity 0.9s ease, filter 1.2s ease";
-            mobileBgNext.style.opacity = "1";
-            // Remove ripple filter as it settles
-            setTimeout(() => {
-              if (mobileBgNext) mobileBgNext.style.filter = "none";
-            }, 300);
-          }
-          setTimeout(() => {
-            showMobileBg(idx);
-            if (mobileBgNext) {
-              mobileBgNext.style.transition = "none";
-              mobileBgNext.style.opacity = "0";
-              mobileBgNext.style.filter = "none";
-            }
-            currentSlide = idx;
-            isAnimating = false;
-          }, 1000);
+          // MOBILE: WebGL ripple on canvas, then swap to CSS bg
+          if (!textures[idx]) { isAnimating = false; return; }
+
+          shaderMat.uniforms.uDirection.value = idx > currentSlide ? 1 : -1;
+          shaderMat.uniforms.uTex1.value = textures[currentSlide];
+          shaderMat.uniforms.uTex1Size.value = textures[currentSlide].userData.size;
+          shaderMat.uniforms.uTex2.value = textures[idx];
+          shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
+
+          // Show canvas
+          canvasEl.style.display = "block";
+          canvasEl.style.opacity = "1";
+          startRenderLoop();
+
+          gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
+            value: 1, duration, ease: "power2.inOut",
+            onComplete: () => {
+              shaderMat.uniforms.uProgress.value = 0;
+              shaderMat.uniforms.uTex1.value = textures[idx];
+              shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
+              // Swap to CSS bg, hide canvas
+              showMobileBg(idx);
+              canvasEl.style.opacity = "0";
+              setTimeout(() => {
+                canvasEl.style.display = "none";
+                stopRenderLoop();
+              }, 200);
+              currentSlide = idx;
+              isAnimating = false;
+            },
+          });
         } else {
           // DESKTOP: WebGL ripple transition
           if (!textures[idx]) return;
@@ -407,26 +417,6 @@ export function Component() {
 
   return (
     <div ref={containerRef} className="lumina-slider-root">
-      {/* SVG ripple filter for mobile transitions */}
-      <svg style={{ position: "absolute", width: 0, height: 0 }}>
-        <filter id="mobile-ripple">
-          <feTurbulence
-            type="turbulence"
-            baseFrequency="0.015 0.015"
-            numOctaves={3}
-            seed={2}
-            result="turbulence"
-          />
-          <feDisplacementMap
-            in="SourceGraphic"
-            in2="turbulence"
-            scale={25}
-            xChannelSelector="R"
-            yChannelSelector="G"
-          />
-        </filter>
-      </svg>
-
       {/* Fixed background: canvas + WebGL */}
       <div className="slider-fixed-layer">
         <main className="slider-wrapper">
