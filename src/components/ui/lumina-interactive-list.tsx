@@ -343,7 +343,7 @@ export function Component() {
   }, []);
 
   return (
-    <div ref={containerRef} className="lumina-slider-root" onClick={requestGyro}>
+    <div ref={containerRef} className="lumina-slider-root">
       {/* Fixed background: canvas + WebGL */}
       <div className="slider-fixed-layer">
         <main className="slider-wrapper">
