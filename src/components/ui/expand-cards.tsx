@@ -6,39 +6,48 @@ import { GlassEffect, GlassFilter } from "@/components/ui/liquid-glass";
 const campaigns = [
   {
     image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=600&q=80",
-    label: "Nike — Phantom",
+    brand: "Nike",
+    type: "Brand Commercial",
   },
   {
     image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
-    label: "Nike — Air Max",
+    brand: "Nike",
+    type: "Product Launch",
   },
   {
     image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
-    label: "Minimal — Watch",
+    brand: "DW",
+    type: "Lifestyle Campaign",
   },
   {
     image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80",
-    label: "Sony — Headphones",
+    brand: "Sony",
+    type: "Product Film",
   },
   {
     image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&q=80",
-    label: "Ray-Ban — Aviator",
+    brand: "Ray-Ban",
+    type: "Brand Identity",
   },
   {
     image: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&q=80",
-    label: "Polaroid — Snap",
+    brand: "Polaroid",
+    type: "Social Campaign",
   },
   {
     image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80",
-    label: "Nike — React",
+    brand: "Nike",
+    type: "Digital Experience",
   },
   {
     image: "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=600&q=80",
-    label: "Skincare — Glow",
+    brand: "Glossier",
+    type: "Brand Commercial",
   },
   {
     image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&q=80",
-    label: "Beats — Studio",
+    brand: "Beats",
+    type: "Product Launch",
   },
 ];
 
@@ -46,49 +55,65 @@ const ExpandOnHover = () => {
   const [expandedImage, setExpandedImage] = useState(4);
   const [hovered, setHovered] = useState(false);
 
-  const getImageWidth = (index: number) =>
-    index === expandedImage ? "24rem" : "5rem";
-
   return (
     <div
-      className="w-full flex items-center justify-center"
+      className="w-full flex items-center justify-center px-4"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
       <GlassFilter />
       <GlassEffect
-        className="rounded-3xl p-3 transition-all duration-700"
+        className="rounded-3xl p-2 md:p-3 transition-all duration-700"
         style={{
-          opacity: hovered ? 1 : 0.4,
+          opacity: hovered ? 1 : 0.5,
           background: hovered ? "rgba(255,255,255,0.08)" : "transparent",
         }}
       >
-        <div className="relative w-full max-w-6xl overflow-x-auto">
-          <div className="flex w-full items-center justify-center gap-1 md:flex-nowrap">
-            {campaigns.map((item, idx) => (
-              <div
-                key={idx}
-                className="relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-500 ease-in-out"
-                style={{
-                  width: getImageWidth(idx + 1),
-                  height: "24rem",
-                }}
-                onMouseEnter={() => setExpandedImage(idx + 1)}
-              >
-                <img
-                  className="w-full h-full object-cover"
-                  src={item.image}
-                  alt={item.label}
-                />
-                {idx + 1 === expandedImage && (
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
-                    <p className="text-white text-sm font-light tracking-wider">
-                      {item.label}
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
+        <div className="relative w-full max-w-6xl overflow-x-auto scrollbar-hide">
+          <div className="flex items-center justify-start md:justify-center gap-1 min-w-max md:min-w-0">
+            {campaigns.map((item, idx) => {
+              const isExpanded = idx + 1 === expandedImage;
+              return (
+                <div
+                  key={idx}
+                  className="relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-500 ease-in-out flex-shrink-0"
+                  style={{
+                    width: isExpanded ? "min(24rem, 70vw)" : "min(5rem, 14vw)",
+                    height: "min(24rem, 60vh)",
+                  }}
+                  onMouseEnter={() => setExpandedImage(idx + 1)}
+                  onTouchStart={() => setExpandedImage(idx + 1)}
+                >
+                  <img
+                    className="w-full h-full object-cover"
+                    src={item.image}
+                    alt={`${item.brand} ${item.type}`}
+                  />
+                  {isExpanded && (
+                    <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                      <p
+                        className="text-white text-2xl md:text-3xl tracking-tight"
+                        style={{
+                          fontFamily: "'Cormorant Garamond', Georgia, serif",
+                          fontWeight: 700,
+                        }}
+                      >
+                        {item.brand}
+                      </p>
+                      <p
+                        className="text-white/50 text-xs md:text-sm tracking-widest uppercase mt-1"
+                        style={{
+                          fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                          fontWeight: 300,
+                        }}
+                      >
+                        {item.type}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </GlassEffect>
