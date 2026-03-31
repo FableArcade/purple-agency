@@ -282,6 +282,8 @@ export function Component() {
               shaderMat.uniforms.uProgress.value = 0;
               shaderMat.uniforms.uTex1.value = textures[idx];
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
+              mouse.sx = mouse.x; mouse.sy = mouse.y;
+              shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
               renderer.render(scene, camera);
               stopRenderLoop();
               currentSlide = idx;
@@ -308,7 +310,7 @@ export function Component() {
               currentSlide = idx;
               isAnimating = false;
               mouse.sx = mouse.x; mouse.sy = mouse.y;
-              setTimeout(() => { mouseFrozen = false; }, 300);
+              shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
             },
           });
         }
