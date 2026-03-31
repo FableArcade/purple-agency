@@ -111,11 +111,11 @@ export function Component() {
           vec2 uv2=coverUV(vUv,uTex2Size)+mOff*0.6;
 
           if(uMobile>0.5){
-            // Mobile: clean crossfade, no distortion
+            // Mobile: clean crossfade, no distortion, no offset
             float fade=smoothstep(0.0,1.0,p);
-            vec4 c1=texture2D(uTex1,uv1);
-            vec4 c2=texture2D(uTex2,uv2);
-            gl_FragColor=mix(c1,c2,fade);
+            vec2 muv1=coverUV(vUv,uTex1Size);
+            vec2 muv2=coverUV(vUv,uTex2Size);
+            gl_FragColor=mix(texture2D(uTex1,muv1),texture2D(uTex2,muv2),fade);
           } else {
             // Desktop: ripple + slide + chromatic aberration
             float d=uDirection;

@@ -14,8 +14,6 @@ export const GlassEffect: React.FC<GlassEffectProps> = ({
   style = {},
 }) => {
   const glassStyle = {
-    boxShadow: "0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1)",
-    transitionTimingFunction: "cubic-bezier(0.175, 0.885, 0.32, 2.2)",
     ...style,
   };
 
@@ -27,19 +25,19 @@ export const GlassEffect: React.FC<GlassEffectProps> = ({
       <div
         className="absolute inset-0 z-0 overflow-hidden rounded-inherit rounded-3xl"
         style={{
-          backdropFilter: "blur(8px)",
+          backdropFilter: "blur(12px)",
           isolation: "isolate",
         }}
       />
       <div
         className="absolute inset-0 z-10 rounded-inherit"
-        style={{ background: "rgba(255, 255, 255, 0.12)" }}
+        style={{ background: "rgba(255, 255, 255, 0.05)" }}
       />
       <div
         className="absolute inset-0 z-20 rounded-inherit rounded-3xl overflow-hidden"
         style={{
           boxShadow:
-            "inset 2px 2px 1px 0 rgba(255, 255, 255, 0.3), inset -1px -1px 1px 1px rgba(255, 255, 255, 0.3)",
+            "inset 1px 1px 1px 0 rgba(255, 255, 255, 0.15), inset -1px -1px 1px 0 rgba(255, 255, 255, 0.15)",
         }}
       />
       <div className="relative z-30">{children}</div>
