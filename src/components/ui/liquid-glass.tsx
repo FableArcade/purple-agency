@@ -21,14 +21,13 @@ export const GlassEffect: React.FC<GlassEffectProps> = ({
 
   return (
     <div
-      className={`relative flex font-semibold overflow-hidden text-white cursor-pointer transition-all duration-700 ${className}`}
+      className={`relative flex font-semibold overflow-hidden text-white cursor-pointer ${className}`}
       style={glassStyle}
     >
       <div
         className="absolute inset-0 z-0 overflow-hidden rounded-inherit rounded-3xl"
         style={{
-          backdropFilter: "blur(3px)",
-          filter: "url(#glass-distortion)",
+          backdropFilter: "blur(8px)",
           isolation: "isolate",
         }}
       />
