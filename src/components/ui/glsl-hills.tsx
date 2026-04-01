@@ -139,7 +139,11 @@ const GLSLHills = ({ speed = 0.5 }: GLSLHillsProps) => {
     <canvas
       ref={canvasRef}
       className="fixed top-0 left-0 w-screen h-screen"
-      style={{ zIndex: 0 }}
+      style={{
+        zIndex: 0,
+        maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 70%)",
+        WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,1) 70%)",
+      }}
     />
   );
 };
