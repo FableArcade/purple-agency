@@ -167,7 +167,7 @@ export default function HowItWorks() {
         {/* Steps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 md:gap-x-20 gap-y-4 sm:gap-y-10 md:gap-y-14 px-2">
           {/* Left Column */}
-          <div className="space-y-14">
+          <div className="space-y-3 sm:space-y-14">
             {steps
               .filter((s) => s.position === "left")
               .map((step, i) => (
@@ -183,7 +183,7 @@ export default function HowItWorks() {
           </div>
 
           {/* Right Column */}
-          <div className="space-y-14">
+          <div className="space-y-3 sm:space-y-14">
             {steps
               .filter((s) => s.position === "right")
               .map((step, i) => (
