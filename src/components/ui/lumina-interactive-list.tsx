@@ -431,24 +431,48 @@ export function Component() {
           >
             {i === 0 ? (
               <div className="fixed-slide-text">
-                <h1
-                  className="text-4xl sm:text-6xl md:text-8xl font-bold mb-6 md:mb-8 text-center flex items-center justify-center gap-0 flex-wrap"
-                  style={{ letterSpacing: "-0.02em", lineHeight: 1.2, paddingBottom: "0.15em" }}
-                >
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
-                    Marketing That&nbsp;
-                  </span>
-                  <ParticleTextEffect
-                    text="Moves"
-                    colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
-                    width={420}
-                    height={180}
-                    particleDensity={2}
-                    animationForce={55}
-                    className="inline-block cursor-pointer translate-y-1 -ml-12"
-                  />
-                </h1>
-                <p className="text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed font-light tracking-wide max-w-xl mx-auto text-center">
+                {/* Desktop: one line, Mobile: two lines */}
+                <div className="hidden sm:block text-center mb-2">
+                  <h1
+                    className="text-6xl md:text-8xl font-bold flex items-center justify-center"
+                    style={{ letterSpacing: "-0.02em", lineHeight: 1.2, paddingBottom: "0.15em" }}
+                  >
+                    <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
+                      Marketing That&nbsp;
+                    </span>
+                    <ParticleTextEffect
+                      text="Moves"
+                      colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
+                      width={420}
+                      height={180}
+                      particleDensity={2}
+                      animationForce={55}
+                      className="inline-block cursor-pointer translate-y-1 -ml-12"
+                    />
+                  </h1>
+                </div>
+                <div className="sm:hidden text-center mb-2">
+                  <h1
+                    className="text-4xl font-bold"
+                    style={{ letterSpacing: "-0.02em", lineHeight: 0.9 }}
+                  >
+                    <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
+                      Marketing That
+                    </span>
+                  </h1>
+                  <div className="flex justify-center" style={{ marginTop: "0.2em" }}>
+                    <ParticleTextEffect
+                      text="Moves"
+                      colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
+                      width={200}
+                      height={70}
+                      particleDensity={3}
+                      animationForce={55}
+                      className="cursor-pointer"
+                    />
+                  </div>
+                </div>
+                <p className="text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed font-light tracking-wide max-w-xl mx-auto text-center mt-0">
                   AI engine. Human direction. Campaigns live in days.
                 </p>
               </div>

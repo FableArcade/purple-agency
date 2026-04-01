@@ -37,9 +37,9 @@ export default function ContactSection() {
   const iconsPerOrbit = Math.ceil(orbitIcons.length / orbitCount);
 
   return (
-    <div className="relative w-full max-w-5xl mx-auto flex items-center justify-between px-4 md:px-10">
+    <div className="relative w-full max-w-5xl mx-auto flex flex-col md:flex-row items-center md:items-center justify-between px-4 md:px-10">
       {/* Left side */}
-      <div className="w-full md:w-1/2 z-10">
+      <div className="w-full md:w-1/2 z-10 text-center md:text-left">
         <p
           className="text-xs uppercase tracking-[0.2em] text-white/30 mb-4"
           style={{ fontFamily: "var(--font-mono), monospace" }}
@@ -47,7 +47,7 @@ export default function ContactSection() {
           Let&apos;s Build
         </p>
         <h2
-          className="text-4xl sm:text-6xl md:text-8xl font-bold text-white mb-6 text-left"
+          className="text-4xl sm:text-6xl md:text-8xl font-bold text-white mb-6"
           style={{
             letterSpacing: "-0.02em",
             textShadow: "0 2px 12px rgba(0,0,0,0.3)",
@@ -57,12 +57,12 @@ export default function ContactSection() {
             Let&apos;s Chat
           </span>
         </h2>
-        <p className="text-white/70 mb-8 max-w-md text-base leading-relaxed font-light">
+        <p className="text-white/70 mb-8 max-w-md mx-auto md:mx-0 text-sm sm:text-base leading-relaxed font-light">
           90 days. Strategy, content, and competitive intelligence — powered by
           an engine that gets smarter every cycle. Your startup deserves
           marketing that moves as fast as you do.
         </p>
-        <div className="flex flex-col sm:flex-row items-start gap-4">
+        <div className="flex flex-col sm:flex-row items-center md:items-start gap-4">
           <a
             href="mailto:hello@purplepix.ai"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white text-sm font-medium hover:bg-white/15 transition-all duration-300"

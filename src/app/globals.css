@@ -155,8 +155,9 @@
     font-size: 0.6rem;
   }
 
-  .sw-dropdown-center {
-    min-width: 180px;
+  .sw-dropdown {
+    min-width: 160px;
+    top: 85px;
   }
 
   .sw-dropdown-item {

@@ -82,7 +82,12 @@ export default function ServiceWheel() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [rotationAngle, setRotationAngle] = useState(0);
   const [autoRotate, setAutoRotate] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 640);
+  }, []);
 
   // Auto-rotation
   useEffect(() => {
@@ -122,7 +127,7 @@ export default function ServiceWheel() {
   const getNodePosition = (index: number) => {
     const total = SERVICES.length;
     const angle = ((index / total) * 360 + rotationAngle) % 360;
-    const radius = 260;
+    const radius = isMobile ? 130 : 260;
     const radian = (angle * Math.PI) / 180;
     const x = radius * Math.cos(radian);
     const y = radius * Math.sin(radian);
@@ -140,7 +145,7 @@ export default function ServiceWheel() {
 
       {/* Orbit ring */}
       <svg className="sw-orbit-ring" viewBox="-320 -320 640 640">
-        <circle cx={0} cy={0} r={260} fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth={1} strokeDasharray="4 8" />
+        <circle cx={0} cy={0} r={isMobile ? 130 : 260} fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth={1} strokeDasharray="4 8" />
       </svg>
 
       {/* Nodes */}
@@ -161,19 +166,19 @@ export default function ServiceWheel() {
           >
             <LiquidGlassNode
               isActive={isActive}
-              className="sw-node-btn w-[88px] h-[88px] rounded-full"
+              className={`sw-node-btn rounded-full ${isMobile ? "w-[56px] h-[56px]" : "w-[88px] h-[88px]"}`}
               onClick={(e) => {
                 e.stopPropagation();
                 handleNodeClick(service.id, i);
               }}
             >
-              <Icon size={isActive ? 30 : 26} strokeWidth={1.5} className="text-white" />
+              <Icon size={isMobile ? 18 : (isActive ? 30 : 26)} strokeWidth={1.5} className="text-white" />
             </LiquidGlassNode>
 
             {/* Label */}
             <div
               className="sw-node-label"
-              style={{ position: "absolute", top: "96px", left: "50%", transform: "translateX(-50%)" }}
+              style={{ position: "absolute", top: isMobile ? "62px" : "96px", left: "50%", transform: "translateX(-50%)", fontSize: isMobile ? "0.55rem" : undefined }}
             >
               {service.label}
             </div>

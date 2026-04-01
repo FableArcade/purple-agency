@@ -130,20 +130,20 @@ export default function HowItWorks() {
         {/* Header */}
         <motion.div className="text-center mb-16" variants={itemVariants}>
           <h2
-            className="text-3xl sm:text-5xl md:text-6xl font-bold text-center mb-6 whitespace-nowrap"
+            className="text-2xl sm:text-5xl md:text-6xl font-bold text-center mb-6 sm:whitespace-nowrap"
             style={{ letterSpacing: "-0.02em" }}
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
               How The Engine Works
             </span>
           </h2>
-          <p className="text-white/70 max-w-lg mx-auto text-base leading-relaxed">
+          <p className="text-white/70 max-w-lg mx-auto text-sm sm:text-base leading-relaxed px-4">
             Brief in. Campaign out. Every output grounded in your brand, directed by senior humans, and improved by every cycle.
           </p>
         </motion.div>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-14">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 md:gap-x-20 gap-y-10 md:gap-y-14 px-2">
           {/* Left Column */}
           <div className="space-y-14">
             {steps
