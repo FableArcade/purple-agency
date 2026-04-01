@@ -6,6 +6,7 @@ import ServiceWheel from "@/components/ui/service-wheel";
 import { WebGLShaderBg } from "@/components/ui/web-gl-shader";
 import HowItWorks from "@/components/ui/how-it-works";
 import ContactSection from "@/components/ui/contact-section";
+import { GLSLHills } from "@/components/ui/glsl-hills";
 import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 
 declare const gsap: any;
@@ -489,7 +490,12 @@ export function Component() {
                 </div>
               </div>
             ) : i === 3 ? (
-              <HowItWorks />
+              <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
+                <GLSLHills speed={0.4} />
+                <div className="relative z-10">
+                  <HowItWorks />
+                </div>
+              </div>
             ) : i === 4 ? (
               <ContactSection />
             ) : (

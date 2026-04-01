@@ -103,29 +103,29 @@ function StepItem({
         transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
       >
         <motion.div
-          className="text-white/80 bg-white/[0.06] p-3 rounded-lg transition-colors duration-300 group-hover:bg-white/[0.12]"
+          className="text-black/60 bg-black/[0.05] p-3 rounded-lg transition-colors duration-300 group-hover:bg-black/[0.1]"
           whileHover={{ rotate: [0, -10, 10, -5, 0], transition: { duration: 0.5 } }}
         >
           {icon}
         </motion.div>
-        <h3 className="text-base sm:text-lg font-medium text-white/90 group-hover:text-white transition-colors duration-300">
+        <h3 className="text-base sm:text-lg font-medium text-black/80 group-hover:text-black transition-colors duration-300">
           {title}
         </h3>
       </motion.div>
       {/* Desktop: always show */}
-      <p className="hidden sm:block text-base text-white/65 leading-relaxed pl-[3.25rem]">
+      <p className="hidden sm:block text-base text-black/50 leading-relaxed pl-[3.25rem]">
         {description}
       </p>
       {/* Mobile: glass bubble on tap */}
       {expanded && (
         <motion.div
-          className="sm:hidden ml-[3.25rem] mt-1 mb-2 px-4 py-3 rounded-2xl text-xs text-white/70 leading-relaxed"
+          className="sm:hidden ml-[3.25rem] mt-1 mb-2 px-4 py-3 rounded-2xl text-xs text-black/50 leading-relaxed"
           style={{
-            background: "rgba(255, 255, 255, 0.06)",
+            background: "rgba(255, 255, 255, 0.7)",
             backdropFilter: "blur(16px)",
             WebkitBackdropFilter: "blur(16px)",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.2)",
+            border: "1px solid rgba(0, 0, 0, 0.06)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5), 0 8px 24px rgba(0,0,0,0.06)",
           }}
           initial={{ opacity: 0, y: -8, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -155,11 +155,11 @@ export default function HowItWorks() {
             className="text-2xl sm:text-5xl md:text-6xl font-bold text-center mb-6 sm:whitespace-nowrap"
             style={{ letterSpacing: "-0.02em" }}
           >
-            <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
+            <span className="bg-clip-text text-transparent bg-gradient-to-b from-black to-black/70">
               The Engine
             </span>
           </h2>
-          <p className="text-white/70 max-w-lg mx-auto text-sm sm:text-base leading-relaxed px-4">
+          <p className="text-black/50 max-w-lg mx-auto text-sm sm:text-base leading-relaxed px-4">
             Brief in. Campaign out. Every output grounded in your brand, directed by senior humans, and improved by every cycle.
           </p>
         </motion.div>
@@ -204,7 +204,7 @@ export default function HowItWorks() {
           className="mt-16 text-center"
           variants={itemVariants}
         >
-          <p className="text-white/25 text-xs uppercase tracking-widest">
+          <p className="text-black/25 text-xs uppercase tracking-widest">
             From brief to live — days, not weeks
           </p>
         </motion.div>
