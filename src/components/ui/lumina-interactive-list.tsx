@@ -480,6 +480,7 @@ export function Component() {
               <ExpandOnHover />
             ) : i === 2 ? (
               <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
+                <div className="fixed inset-0 bg-black z-0" />
                 <WebGLShaderBg />
                 <div className="relative z-10">
                   <ServiceWheel />
