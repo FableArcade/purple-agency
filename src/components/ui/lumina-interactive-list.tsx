@@ -6,6 +6,7 @@ import ServiceWheel from "@/components/ui/service-wheel";
 import { WebGLShaderBg } from "@/components/ui/web-gl-shader";
 import HowItWorks from "@/components/ui/how-it-works";
 import ContactSection from "@/components/ui/contact-section";
+import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 
 declare const gsap: any;
 declare const THREE: any;
@@ -431,12 +432,21 @@ export function Component() {
             {i === 0 ? (
               <div className="fixed-slide-text">
                 <h1
-                  className="text-4xl sm:text-6xl md:text-8xl font-bold mb-6 md:mb-8 text-center"
-                  style={{ letterSpacing: "-0.02em" }}
+                  className="text-4xl sm:text-6xl md:text-8xl font-bold mb-6 md:mb-8 text-center flex items-center justify-center gap-0 flex-wrap"
+                  style={{ letterSpacing: "-0.02em", lineHeight: 1.2, paddingBottom: "0.15em" }}
                 >
-                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80 whitespace-nowrap">
-                    Marketing That Moves
+                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
+                    Marketing That&nbsp;
                   </span>
+                  <ParticleTextEffect
+                    text="Moves"
+                    colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
+                    width={420}
+                    height={180}
+                    particleDensity={2}
+                    animationForce={55}
+                    className="inline-block cursor-pointer translate-y-1 -ml-12"
+                  />
                 </h1>
                 <p className="text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed font-light tracking-wide max-w-xl mx-auto text-center">
                   AI engine. Human direction. Campaigns live in days.
