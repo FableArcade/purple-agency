@@ -487,7 +487,7 @@ export function Component() {
             ) : i === 2 ? (
               <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
                 <div className="fixed inset-0 bg-black/30 z-0" />
-                {activeSlide === 2 && <WebGLShaderBg />}
+                {(activeSlide === 1 || activeSlide === 2 || activeSlide === 3) && <WebGLShaderBg />}
                 <div className="relative z-10">
                   <ServiceWheel />
                 </div>
