@@ -9,6 +9,7 @@ import {
   Code,
   ChevronRight,
 } from "lucide-react";
+import { LiquidGlassNode, GlassButtonFilter } from "@/components/ui/liquid-glass-button";
 
 interface SubService {
   label: string;
@@ -80,112 +81,108 @@ const SERVICES: ServiceNode[] = [
 
 export default function ServiceWheel() {
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [time, setTime] = useState(0);
-  const animRef = useRef<number>(0);
+  const [rotationAngle, setRotationAngle] = useState(0);
+  const [autoRotate, setAutoRotate] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Organic floating animation
+  // Auto-rotation
   useEffect(() => {
-    const animate = () => {
-      setTime((t) => t + 0.004);
-      animRef.current = requestAnimationFrame(animate);
-    };
-    animRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animRef.current);
-  }, []);
+    if (!autoRotate) return;
+    const timer = setInterval(() => {
+      setRotationAngle((prev) => (prev + 0.3) % 360);
+    }, 50);
+    return () => clearInterval(timer);
+  }, [autoRotate]);
 
-  // Close on background click
+  // Background click to deselect
   const handleBgClick = (e: React.MouseEvent) => {
-    if (e.target === containerRef.current) {
+    if (e.target === containerRef.current || (e.target as HTMLElement).classList.contains("sw-bg")) {
       setActiveId(null);
+      setAutoRotate(true);
     }
   };
 
-  const getNodePosition = (index: number, total: number) => {
-    if (activeId) {
-      const activeIndex = SERVICES.findIndex((s) => s.id === activeId);
-      if (index === activeIndex) {
-        // Active node goes to center
-        return { x: 0, y: 0, scale: 1.3 };
-      }
-      // Others spread out in a wider arc below
-      const otherIndices = Array.from({ length: total }, (_, i) => i).filter(
-        (i) => i !== activeIndex
-      );
-      const pos = otherIndices.indexOf(index);
-      const spread = 280;
-      const startX = -((otherIndices.length - 1) * spread) / 2;
-      return {
-        x: startX + pos * spread,
-        y: 220,
-        scale: 0.7,
-      };
+  const handleNodeClick = (id: string, index: number) => {
+    if (activeId === id) {
+      setActiveId(null);
+      setAutoRotate(true);
+    } else {
+      setActiveId(id);
+      setAutoRotate(false);
+      // Snap selected node to top (270°)
+      const targetAngle = (index / SERVICES.length) * 360;
+      setRotationAngle(270 - targetAngle);
     }
+  };
 
-    // Organic floating positions
-    const baseAngle = (index / total) * Math.PI * 2 - Math.PI / 2;
+  const getNodePosition = (index: number) => {
+    const total = SERVICES.length;
+    const angle = ((index / total) * 360 + rotationAngle) % 360;
     const radius = 180;
-    // Each node has slightly different drift speed/phase
-    const drift = Math.sin(time * (1 + index * 0.3) + index * 1.5) * 12;
-    const driftY = Math.cos(time * (0.8 + index * 0.2) + index * 2) * 10;
-
-    return {
-      x: Math.cos(baseAngle) * (radius + drift),
-      y: Math.sin(baseAngle) * (radius + driftY),
-      scale: 1,
-    };
+    const radian = (angle * Math.PI) / 180;
+    const x = radius * Math.cos(radian);
+    const y = radius * Math.sin(radian);
+    const zIndex = Math.round(100 + 50 * Math.cos(radian));
+    const opacity = 0.5 + 0.5 * ((1 + Math.sin(radian)) / 2);
+    return { x, y, zIndex, opacity };
   };
 
   return (
     <div
       ref={containerRef}
-      className="sw-container"
+      className="sw-container sw-bg"
       onClick={handleBgClick}
     >
-      {/* Center glow */}
-      {!activeId && (
-        <div className="sw-center-glow" />
-      )}
+      <GlassButtonFilter />
 
-      {/* Orbital ring */}
-      {!activeId && (
-        <svg className="sw-orbit-ring" viewBox="-250 -250 500 500">
-          <circle
-            cx={0}
-            cy={0}
-            r={180}
-            fill="none"
-            stroke="rgba(255,255,255,0.06)"
-            strokeWidth={1}
-            strokeDasharray="6 10"
-          />
-        </svg>
-      )}
+      {/* Center core */}
+      <div className="absolute w-14 h-14 rounded-full flex items-center justify-center z-10 pointer-events-none">
+        <div className="w-14 h-14 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center">
+          <div className="w-6 h-6 rounded-full bg-white/15 backdrop-blur-sm" />
+        </div>
+        <div className="absolute w-18 h-18 rounded-full border border-white/8 animate-ping opacity-40" />
+      </div>
+
+      {/* Orbit ring */}
+      <svg className="sw-orbit-ring" viewBox="-250 -250 500 500">
+        <circle cx={0} cy={0} r={180} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} strokeDasharray="4 8" />
+      </svg>
 
       {/* Nodes */}
       {SERVICES.map((service, i) => {
-        const pos = getNodePosition(i, SERVICES.length);
+        const pos = getNodePosition(i);
         const isActive = activeId === service.id;
         const Icon = service.icon;
 
         return (
           <div
             key={service.id}
-            className={`sw-node ${isActive ? "active" : ""} ${activeId && !isActive ? "inactive" : ""}`}
+            className="absolute transition-all duration-700"
             style={{
-              transform: `translate(${pos.x}px, ${pos.y}px) scale(${pos.scale})`,
-              zIndex: isActive ? 20 : 5,
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              setActiveId(isActive ? null : service.id);
+              transform: `translate(${pos.x}px, ${pos.y}px) scale(${isActive ? 1.25 : 1})`,
+              zIndex: isActive ? 200 : pos.zIndex,
+              opacity: isActive ? 1 : pos.opacity,
             }}
           >
-            {/* Glass circle */}
-            <div className="sw-node-circle">
-              <Icon size={isActive ? 22 : 18} strokeWidth={1.5} />
+            <LiquidGlassNode
+              isActive={isActive}
+              className="w-[72px] h-[72px] rounded-full"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNodeClick(service.id, i);
+              }}
+            >
+              <Icon size={isActive ? 22 : 18} strokeWidth={1.5} className="text-white/80" />
+            </LiquidGlassNode>
+
+            {/* Label */}
+            <div
+              className={`absolute top-[80px] left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
+                isActive ? "text-white" : "text-white/50"
+              }`}
+            >
+              {service.label}
             </div>
-            <span className="sw-node-label">{service.label}</span>
 
             {/* Glass dropdown */}
             {isActive && (
@@ -196,7 +193,6 @@ export default function ServiceWheel() {
                     className="sw-dropdown-item"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // Navigate to service page when wired up
                     }}
                   >
                     <span>{sub.label}</span>
