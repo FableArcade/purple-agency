@@ -3,6 +3,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import ExpandOnHover from "@/components/ui/expand-cards";
 import ServiceWheel from "@/components/ui/service-wheel";
+import { WebGLShaderBg } from "@/components/ui/web-gl-shader";
+import { CosmicSpectrum } from "@/components/ui/cosmos-spectrum";
 
 declare const gsap: any;
 declare const THREE: any;
@@ -419,21 +421,17 @@ export function Component() {
             key={i}
             className={`fixed-slide-panel ${activeSlide === i ? "active" : ""}`}
           >
-            {i === 1 ? (
-              <div className="fixed-slide-text">
-                <h2 className="scroll-section-heading">{sl.content.heading}</h2>
-                <p
-                  className="scroll-section-text"
-                  dangerouslySetInnerHTML={{
-                    __html: sl.content.body.replace(/\n/g, "<br />"),
-                  }}
-                />
-                <div className="mt-8">
-                  <ExpandOnHover />
+            {i === 0 ? (
+              <CosmicSpectrum color="purple" blur />
+            ) : i === 1 ? (
+              <ExpandOnHover />
+            ) : i === 2 ? (
+              <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
+                <WebGLShaderBg />
+                <div className="relative z-10">
+                  <ServiceWheel />
                 </div>
               </div>
-            ) : i === 2 ? (
-              <ServiceWheel />
             ) : (
               <div className="fixed-slide-text">
                 <h2 className="scroll-section-heading">{sl.content.heading}</h2>

@@ -59,8 +59,8 @@
 }
 
 .sw-node-circle {
-  width: 72px;
-  height: 72px;
+  width: 88px;
+  height: 88px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -86,8 +86,8 @@
 }
 
 .sw-node.active .sw-node-circle {
-  width: 88px;
-  height: 88px;
+  width: 100px;
+  height: 100px;
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.3);
   color: #fff;
@@ -98,26 +98,26 @@
 }
 
 .sw-node-label {
-  font-family: var(--font-mono), monospace;
-  font-size: 0.6rem;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.95rem;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 0.08em;
+  color: #fff;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   white-space: nowrap;
   transition: all 0.3s ease;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .sw-node:hover .sw-node-label,
 .sw-node.active .sw-node-label {
-  color: rgba(255, 255, 255, 0.9);
+  color: #fff;
 }
 
 /* Glass dropdown */
 .sw-dropdown {
   position: absolute;
-  top: 110px;
+  top: 125px;
   left: 50%;
   transform: translateX(-50%);
   min-width: 220px;
@@ -630,12 +630,15 @@
 }
 
 /* Work section: no blur/scale transition to avoid glass conflict */
+/* Home + Services panels: no blur/scale transition */
+.fixed-slide-panel:nth-child(1),
 .fixed-slide-panel:nth-child(3) {
   transform: none;
   filter: none;
   transition: opacity 0.6s ease;
 }
 
+.fixed-slide-panel:nth-child(1).active,
 .fixed-slide-panel:nth-child(3).active {
   transform: none;
   filter: none;

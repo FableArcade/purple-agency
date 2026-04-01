@@ -93,13 +93,18 @@ export default function ServiceWheel() {
     return () => clearInterval(timer);
   }, [autoRotate]);
 
-  // Background click to deselect
-  const handleBgClick = (e: React.MouseEvent) => {
-    if (e.target === containerRef.current || (e.target as HTMLElement).classList.contains("sw-bg")) {
-      setActiveId(null);
-      setAutoRotate(true);
-    }
-  };
+  // Click anywhere outside a node to deselect
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".sw-node-btn") && !target.closest(".sw-dropdown")) {
+        setActiveId(null);
+        setAutoRotate(true);
+      }
+    };
+    window.addEventListener("click", handleClickOutside);
+    return () => window.removeEventListener("click", handleClickOutside);
+  }, []);
 
   const handleNodeClick = (id: string, index: number) => {
     if (activeId === id) {
@@ -129,8 +134,7 @@ export default function ServiceWheel() {
   return (
     <div
       ref={containerRef}
-      className="sw-container sw-bg"
-      onClick={handleBgClick}
+      className="sw-container"
     >
       <GlassButtonFilter />
 
@@ -157,20 +161,19 @@ export default function ServiceWheel() {
           >
             <LiquidGlassNode
               isActive={isActive}
-              className="w-[72px] h-[72px] rounded-full"
+              className="sw-node-btn w-[88px] h-[88px] rounded-full"
               onClick={(e) => {
                 e.stopPropagation();
                 handleNodeClick(service.id, i);
               }}
             >
-              <Icon size={isActive ? 22 : 18} strokeWidth={1.5} className="text-black/70" />
+              <Icon size={isActive ? 30 : 26} strokeWidth={1.5} className="text-white" />
             </LiquidGlassNode>
 
             {/* Label */}
             <div
-              className={`absolute top-[80px] left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium tracking-wider uppercase transition-all duration-300 text-center sw-node-label ${
-                isActive ? "" : ""
-              }`}
+              className="sw-node-label"
+              style={{ position: "absolute", top: "96px", left: "50%", transform: "translateX(-50%)" }}
             >
               {service.label}
             </div>
