@@ -109,7 +109,7 @@ function StepItem({
           {title}
         </h3>
       </motion.div>
-      <motion.p className="text-xs sm:text-base text-white/65 leading-relaxed pl-[3.25rem]">
+      <motion.p className="hidden sm:block text-xs sm:text-base text-white/65 leading-relaxed pl-[3.25rem]">
         {description}
       </motion.p>
     </motion.div>
@@ -128,7 +128,7 @@ export default function HowItWorks() {
         variants={containerVariants}
       >
         {/* Header */}
-        <motion.div className="text-center mb-16" variants={itemVariants}>
+        <motion.div className="text-center mb-6 sm:mb-16" variants={itemVariants}>
           <h2
             className="text-2xl sm:text-5xl md:text-6xl font-bold text-center mb-6 sm:whitespace-nowrap"
             style={{ letterSpacing: "-0.02em" }}
@@ -143,7 +143,7 @@ export default function HowItWorks() {
         </motion.div>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 md:gap-x-20 gap-y-10 md:gap-y-14 px-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 md:gap-x-20 gap-y-4 sm:gap-y-10 md:gap-y-14 px-2">
           {/* Left Column */}
           <div className="space-y-14">
             {steps

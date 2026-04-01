@@ -160,13 +160,12 @@
     top: 85px;
   }
 
-  /* How It Works — scrollable on mobile */
+  /* How It Works — smaller on mobile to fit without scrolling */
   .fixed-slide-panel:nth-child(4) {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     align-items: flex-start;
-    padding-top: 5rem;
-    padding-bottom: 3rem;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+    overflow: visible;
   }
 
   .sw-dropdown-item {

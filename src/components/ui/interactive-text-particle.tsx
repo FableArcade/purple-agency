@@ -109,7 +109,8 @@ const ParticleTextEffect: React.FC<ParticleTextEffectProps> = ({
     tb.str = text;
     tb.h = Math.min(Math.floor(height * 0.85), 100);
 
-    interactionRadiusRef.current = Math.max(40, tb.h * 1.2);
+    const isTouchDevice = "ontouchstart" in window;
+    interactionRadiusRef.current = Math.max(isTouchDevice ? 80 : 40, tb.h * (isTouchDevice ? 2 : 1.2));
 
     ctx.font = `800 ${tb.h}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
     ctx.textAlign = "center";
@@ -187,10 +188,28 @@ const ParticleTextEffect: React.FC<ParticleTextEffectProps> = ({
     <canvas
       ref={canvasRef}
       className={className}
-      style={{ width, height }}
+      style={{ width, height, touchAction: "none" }}
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       onPointerEnter={() => { hasPointerRef.current = true; }}
+      onTouchMove={(e) => {
+        const touch = e.touches[0];
+        const canvas = canvasRef.current;
+        if (!canvas || !touch) return;
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = width / rect.width;
+        const scaleY = height / rect.height;
+        pointerRef.current.x = (touch.clientX - rect.left) * scaleX;
+        pointerRef.current.y = (touch.clientY - rect.top) * scaleY;
+        hasPointerRef.current = true;
+        if (!animationIdRef.current) animate();
+      }}
+      onTouchEnd={() => {
+        hasPointerRef.current = false;
+        pointerRef.current.x = undefined;
+        pointerRef.current.y = undefined;
+        if (!animationIdRef.current) animate();
+      }}
     />
   );
 };
