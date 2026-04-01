@@ -103,12 +103,12 @@ function StepItem({
         transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
       >
         <motion.div
-          className="text-black/60 bg-black/[0.05] p-3 rounded-lg transition-colors duration-300 group-hover:bg-black/[0.1]"
+          className="text-black/60 bg-black/[0.05] p-2 sm:p-3 rounded-lg transition-colors duration-300 group-hover:bg-black/[0.1] [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-6 sm:[&>svg]:h-6"
           whileHover={{ rotate: [0, -10, 10, -5, 0], transition: { duration: 0.5 } }}
         >
           {icon}
         </motion.div>
-        <h3 className="text-base sm:text-lg font-medium text-black/80 group-hover:text-black transition-colors duration-300">
+        <h3 className="text-xs sm:text-lg font-medium text-black/80 group-hover:text-black transition-colors duration-300">
           {title}
         </h3>
       </motion.div>
@@ -119,7 +119,7 @@ function StepItem({
       {/* Mobile: glass bubble on tap */}
       {expanded && (
         <motion.div
-          className="sm:hidden ml-[3.25rem] mt-1 mb-2 px-4 py-3 rounded-2xl text-xs text-black/50 leading-relaxed"
+          className="sm:hidden ml-[2.5rem] mt-1 mb-1 px-3 py-2 rounded-xl text-[0.65rem] text-black/50 leading-relaxed"
           style={{
             background: "rgba(255, 255, 255, 0.7)",
             backdropFilter: "blur(16px)",

@@ -206,8 +206,9 @@ export default function ServiceWheel() {
               willChange: "transform",
               zIndex: isActive ? 200 : undefined,
               opacity: isActive ? 1 : undefined,
+              transition: "transform 0.5s ease",
             } : {
-              transform: `translate(${pos!.x}px, ${pos!.y}px)`,
+              transform: `translate(${pos!.x}px, ${pos!.y}px) scale(${isActive ? 1.15 : 1})`,
               zIndex: isActive ? 200 : pos!.zIndex,
               opacity: isActive ? 1 : pos!.opacity,
             }}

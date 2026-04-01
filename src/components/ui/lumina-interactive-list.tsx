@@ -47,7 +47,7 @@ const SLIDES = [
     nav: "How",
     title: "How",
     description: "Brief in. Campaign out.",
-    media: "https://assets.codepen.io/7558/orange-portrait-004.jpg",
+    media: "/how-bg.jpg",
     content: {
       heading: "5 Days. Start to Live.",
       body: "Day 1 — Brief and positioning locked.\nDay 2–3 — Engine produces creative, emails, pages, social.\nDay 4 — Creative director curates. Channels configured.\nDay 5 — Live across Google, Meta, LinkedIn, email.\n\nEvery output grounded in your brand.\nNot generic AI slop.",
