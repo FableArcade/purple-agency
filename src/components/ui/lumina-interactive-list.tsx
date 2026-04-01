@@ -115,8 +115,8 @@ export function Component() {
           float p=uProgress;
           vec2 mOff=uMouse*0.015;
 
-          vec2 uv1=coverUV(vUv,uTex1Size)+mOff+vec2(0.0,0.05);
-          vec2 uv2=coverUV(vUv,uTex2Size)+mOff+vec2(0.0,0.05);
+          vec2 uv1=coverUV(vUv,uTex1Size)+mOff+vec2(0.0,0.12);
+          vec2 uv2=coverUV(vUv,uTex2Size)+mOff+vec2(0.0,0.12);
 
           if(uMobile>0.5){
             // Mobile: clean crossfade, no distortion, no offset
@@ -267,15 +267,10 @@ export function Component() {
         document.getElementById("slideNumber")!.textContent = String(idx + 1).padStart(2, "0");
 
         // If going TO services (idx 2), show it immediately but fade beam
-        // If leaving services, hide current panel so ripple is visible
-        if (idx === 2) {
+        // Panels with custom BGs (2=services, 3=how) show immediately
+        // Others hide first so ripple is visible
+        if (idx === 2 || idx === 3) {
           setActiveSlideRef.current(idx);
-        } else if (currentSlide === 2) {
-          // Leaving services — fade beam out first
-          setActiveSlideRef.current(-1);
-          setTimeout(() => {
-            setActiveSlideRef.current(idx);
-          }, duration * 900);
         } else {
           setActiveSlideRef.current(-1);
           setTimeout(() => {

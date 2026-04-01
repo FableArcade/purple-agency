@@ -59,14 +59,14 @@ export default function ContactSection() {
         </p>
         <div className="flex flex-col sm:flex-row items-center md:items-start gap-4">
           <a
-            href="mailto:hello@engine.ai"
+            href="mailto:hello@movesagency.ai"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white text-sm font-medium hover:bg-white/15 transition-all duration-300"
           >
             <Mail size={16} />
-            hello@engine.ai
+            hello@movesagency.ai
           </a>
           <a
-            href="mailto:hello@engine.ai"
+            href="mailto:hello@movesagency.ai"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 text-white/50 text-sm font-light hover:text-white/80 hover:border-white/20 transition-all duration-300"
           >
             Book a call
