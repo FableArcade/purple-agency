@@ -105,11 +105,11 @@ function StepItem({
         >
           {icon}
         </motion.div>
-        <h3 className="text-lg font-medium text-white/90 group-hover:text-white transition-colors duration-300">
+        <h3 className="text-base sm:text-lg font-medium text-white/90 group-hover:text-white transition-colors duration-300">
           {title}
         </h3>
       </motion.div>
-      <motion.p className="text-base text-white/65 leading-relaxed pl-[3.25rem]">
+      <motion.p className="text-xs sm:text-base text-white/65 leading-relaxed pl-[3.25rem]">
         {description}
       </motion.p>
     </motion.div>

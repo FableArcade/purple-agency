@@ -48,14 +48,9 @@ export default function ContactSection() {
         </p>
         <h2
           className="text-4xl sm:text-6xl md:text-8xl font-bold text-white mb-6"
-          style={{
-            letterSpacing: "-0.02em",
-            textShadow: "0 2px 12px rgba(0,0,0,0.3)",
-          }}
+          style={{ letterSpacing: "-0.02em" }}
         >
-          <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
-            Let&apos;s Chat
-          </span>
+          Let&apos;s Chat
         </h2>
         <p className="text-white/70 mb-8 max-w-md mx-auto md:mx-0 text-sm sm:text-base leading-relaxed font-light">
           90 days. Strategy, content, and competitive intelligence — powered by

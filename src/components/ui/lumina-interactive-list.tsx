@@ -445,7 +445,7 @@ export function Component() {
                       colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
                       width={420}
                       height={180}
-                      particleDensity={2}
+                      particleDensity={1}
                       animationForce={55}
                       className="inline-block cursor-pointer translate-y-1 -ml-12"
                     />
@@ -466,7 +466,7 @@ export function Component() {
                       colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
                       width={200}
                       height={70}
-                      particleDensity={3}
+                      particleDensity={2}
                       animationForce={55}
                       className="cursor-pointer"
                     />

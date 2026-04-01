@@ -160,6 +160,15 @@
     top: 85px;
   }
 
+  /* How It Works — scrollable on mobile */
+  .fixed-slide-panel:nth-child(4) {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    align-items: flex-start;
+    padding-top: 5rem;
+    padding-bottom: 3rem;
+  }
+
   .sw-dropdown-item {
     padding: 8px 12px;
     font-size: 0.8rem;
