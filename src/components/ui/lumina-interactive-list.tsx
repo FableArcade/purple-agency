@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import ExpandOnHover from "@/components/ui/expand-cards";
 import ServiceWheel from "@/components/ui/service-wheel";
 import { WebGLShaderBg } from "@/components/ui/web-gl-shader";
+import HowItWorks from "@/components/ui/how-it-works";
+import ContactSection from "@/components/ui/contact-section";
 
 declare const gsap: any;
 declare const THREE: any;
@@ -260,10 +262,16 @@ export function Component() {
         });
         document.getElementById("slideNumber")!.textContent = String(idx + 1).padStart(2, "0");
 
-        // Switch text content at midpoint
-        setTimeout(() => {
+        // If going TO services (idx 2), show it immediately so beams cover the bg
+        // If leaving services, hide current panel so ripple is visible
+        if (idx === 2) {
           setActiveSlideRef.current(idx);
-        }, duration * 400);
+        } else {
+          setActiveSlideRef.current(-1);
+          setTimeout(() => {
+            setActiveSlideRef.current(idx);
+          }, duration * 900);
+        }
 
         if (isMobile) {
           if (!textures[idx]) { isAnimating = false; return; }
@@ -423,15 +431,14 @@ export function Component() {
             {i === 0 ? (
               <div className="fixed-slide-text">
                 <h1
-                  className="text-5xl md:text-7xl font-light tracking-tight text-white text-center"
-                  style={{
-                    fontFamily: "var(--font-heading), 'Cormorant Garamond', Georgia, serif",
-                    textShadow: "0 2px 20px rgba(0,0,0,0.4)",
-                  }}
+                  className="text-4xl sm:text-6xl md:text-8xl font-bold mb-6 md:mb-8 text-center"
+                  style={{ letterSpacing: "-0.02em" }}
                 >
-                  Marketing That Moves
+                  <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80 whitespace-nowrap">
+                    Marketing That Moves
+                  </span>
                 </h1>
-                <p className="mt-6 text-white/40 text-sm md:text-base font-light tracking-wide text-center">
+                <p className="text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed font-light tracking-wide max-w-xl mx-auto text-center">
                   AI engine. Human direction. Campaigns live in days.
                 </p>
               </div>
@@ -444,6 +451,10 @@ export function Component() {
                   <ServiceWheel />
                 </div>
               </div>
+            ) : i === 3 ? (
+              <HowItWorks />
+            ) : i === 4 ? (
+              <ContactSection />
             ) : (
               <div className="fixed-slide-text">
                 <h2 className="scroll-section-heading">{sl.content.heading}</h2>

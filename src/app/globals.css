@@ -58,44 +58,7 @@
   opacity: 0.5;
 }
 
-.sw-node-circle {
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    0 4px 20px rgba(0, 0, 0, 0.2);
-  transition: all 0.4s ease;
-}
-
-.sw-node:hover .sw-node-circle {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: #fff;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.15),
-    0 8px 30px rgba(0, 0, 0, 0.3);
-}
-
-.sw-node.active .sw-node-circle {
-  width: 100px;
-  height: 100px;
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
-  color: #fff;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    0 12px 40px rgba(0, 0, 0, 0.3),
-    0 0 30px rgba(255, 255, 255, 0.05);
-}
+/* sw-node-circle removed — liquid glass handles styling */
 
 .sw-node-label {
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -187,15 +150,6 @@
     height: 500px;
   }
 
-  .sw-node-circle {
-    width: 56px;
-    height: 56px;
-  }
-
-  .sw-node.active .sw-node-circle {
-    width: 68px;
-    height: 68px;
-  }
 
   .sw-node-label {
     font-size: 0.6rem;
@@ -635,7 +589,7 @@
 .fixed-slide-panel:nth-child(3) {
   transform: none;
   filter: none;
-  transition: opacity 1.2s ease;
+  transition: opacity 0.5s ease;
 }
 
 .fixed-slide-panel:nth-child(1).active,
@@ -645,12 +599,10 @@
 }
 
 .fixed-slide-text {
-  max-width: 640px;
   width: 100%;
-  padding: 2rem;
+  padding: 0 2rem;
   text-align: center;
   box-sizing: border-box;
-  margin: 0 auto;
 }
 
 .scroll-section-label {
@@ -670,10 +622,10 @@
 
 .scroll-section-text {
   font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
   font-weight: 300;
   line-height: 1.9;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.75);
   margin: 0;
   white-space: pre-line;
   text-align: center;
@@ -771,7 +723,7 @@
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: clamp(9px, 1vw, 11px);
   letter-spacing: 0.08em;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
   text-transform: uppercase;
   white-space: nowrap;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);

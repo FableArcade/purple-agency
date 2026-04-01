@@ -120,7 +120,7 @@ export function WebGLShaderBg() {
     <canvas
       ref={canvasRef}
       className="absolute top-0 left-0 w-full h-full"
-      style={{ zIndex: 0, mixBlendMode: "screen" }}
+      style={{ zIndex: 0, mixBlendMode: "screen", maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,1) 50%)", WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,1) 50%)" }}
     />
   );
 }

@@ -154,7 +154,7 @@ export default function ServiceWheel() {
             key={service.id}
             className="absolute transition-all duration-700"
             style={{
-              transform: `translate(${pos.x}px, ${pos.y}px) scale(${isActive ? 1.25 : 1})`,
+              transform: `translate(${pos.x}px, ${pos.y}px)`,
               zIndex: isActive ? 200 : pos.zIndex,
               opacity: isActive ? 1 : pos.opacity,
             }}
