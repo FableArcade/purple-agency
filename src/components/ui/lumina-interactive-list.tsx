@@ -488,12 +488,7 @@ export function Component() {
                 </p>
               </div>
             ) : i === 1 ? (
-              <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
-                {activeSlide === 1 && <EtheralShadow color="rgba(128, 128, 128, 1)" scale={80} speed={70} opacity={0.2} />}
-                <div className="relative z-10">
-                  <ExpandOnHover />
-                </div>
-              </div>
+              <ExpandOnHover />
             ) : i === 2 ? (
               <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
                 <div className="fixed inset-0 bg-black/30 z-0" />
