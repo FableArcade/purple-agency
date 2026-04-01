@@ -90,8 +90,8 @@ export function WebGLShaderBg() {
 
     const handleResize = () => {
       if (!refs.renderer || !refs.uniforms) return;
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
       refs.renderer.setSize(w, h, false);
       refs.uniforms.resolution.value = [w, h];
     };
@@ -119,7 +119,7 @@ export function WebGLShaderBg() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute top-0 left-0 w-full h-full"
+      className="fixed top-0 left-0 w-screen h-screen"
       style={{ zIndex: 0, mixBlendMode: "screen", maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,1) 50%)", WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.65) 0%, rgba(0,0,0,1) 50%)" }}
     />
   );
