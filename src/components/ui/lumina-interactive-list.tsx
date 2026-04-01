@@ -441,6 +441,7 @@ export function Component() {
                       Marketing That&nbsp;
                     </span>
                     <ParticleTextEffect
+                      key={`desktop-${activeSlide}`}
                       text="Moves"
                       colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
                       width={420}
@@ -462,6 +463,7 @@ export function Component() {
                   </h1>
                   <div className="flex justify-center" style={{ marginTop: "0.2em" }}>
                     <ParticleTextEffect
+                      key={`mobile-${activeSlide}`}
                       text="Moves"
                       colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
                       width={200}

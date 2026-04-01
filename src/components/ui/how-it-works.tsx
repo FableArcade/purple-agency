@@ -156,7 +156,7 @@ export default function HowItWorks() {
             style={{ letterSpacing: "-0.02em" }}
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
-              How The Engine Works
+              The Engine
             </span>
           </h2>
           <p className="text-white/70 max-w-lg mx-auto text-sm sm:text-base leading-relaxed px-4">
@@ -165,9 +165,9 @@ export default function HowItWorks() {
         </motion.div>
 
         {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 md:gap-x-20 gap-y-4 sm:gap-y-10 md:gap-y-14 px-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 md:gap-x-20 gap-y-5 sm:gap-y-10 md:gap-y-14 px-2">
           {/* Left Column */}
-          <div className="space-y-3 sm:space-y-14">
+          <div className="space-y-5 sm:space-y-14">
             {steps
               .filter((s) => s.position === "left")
               .map((step, i) => (
@@ -183,7 +183,7 @@ export default function HowItWorks() {
           </div>
 
           {/* Right Column */}
-          <div className="space-y-3 sm:space-y-14">
+          <div className="space-y-5 sm:space-y-14">
             {steps
               .filter((s) => s.position === "right")
               .map((step, i) => (
