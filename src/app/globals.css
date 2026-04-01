@@ -635,7 +635,7 @@
 .fixed-slide-panel:nth-child(3) {
   transform: none;
   filter: none;
-  transition: opacity 0.6s ease;
+  transition: opacity 1.2s ease;
 }
 
 .fixed-slide-panel:nth-child(1).active,

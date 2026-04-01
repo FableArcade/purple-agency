@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import ExpandOnHover from "@/components/ui/expand-cards";
 import ServiceWheel from "@/components/ui/service-wheel";
 import { WebGLShaderBg } from "@/components/ui/web-gl-shader";
-import { CosmicSpectrum } from "@/components/ui/cosmos-spectrum";
 
 declare const gsap: any;
 declare const THREE: any;
@@ -422,7 +421,20 @@ export function Component() {
             className={`fixed-slide-panel ${activeSlide === i ? "active" : ""}`}
           >
             {i === 0 ? (
-              <CosmicSpectrum color="purple" blur />
+              <div className="fixed-slide-text">
+                <h1
+                  className="text-5xl md:text-7xl font-light tracking-tight text-white text-center"
+                  style={{
+                    fontFamily: "var(--font-heading), 'Cormorant Garamond', Georgia, serif",
+                    textShadow: "0 2px 20px rgba(0,0,0,0.4)",
+                  }}
+                >
+                  Marketing That Moves
+                </h1>
+                <p className="mt-6 text-white/40 text-sm md:text-base font-light tracking-wide text-center">
+                  AI engine. Human direction. Campaigns live in days.
+                </p>
+              </div>
             ) : i === 1 ? (
               <ExpandOnHover />
             ) : i === 2 ? (

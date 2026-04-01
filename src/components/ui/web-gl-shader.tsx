@@ -54,9 +54,9 @@ export function WebGLShaderBg() {
     `;
 
     const scene = new THREE.Scene();
-    refs.renderer = new THREE.WebGLRenderer({ canvas });
+    refs.renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
     refs.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    refs.renderer.setClearColor(new THREE.Color(0x000000));
+    refs.renderer.setClearColor(new THREE.Color(0x000000), 0);
 
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, -1);
 
@@ -120,7 +120,7 @@ export function WebGLShaderBg() {
     <canvas
       ref={canvasRef}
       className="absolute top-0 left-0 w-full h-full"
-      style={{ zIndex: 0 }}
+      style={{ zIndex: 0, mixBlendMode: "screen" }}
     />
   );
 }
