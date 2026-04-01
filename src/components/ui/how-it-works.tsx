@@ -143,7 +143,7 @@ export default function HowItWorks() {
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
 
   return (
-    <div ref={sectionRef} className="w-full max-w-5xl mx-auto px-4">
+    <div ref={sectionRef} className="w-full max-w-5xl mx-auto px-4 -mt-16 sm:mt-6">
       <motion.div
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}

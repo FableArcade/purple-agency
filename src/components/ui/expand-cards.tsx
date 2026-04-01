@@ -79,10 +79,12 @@ const ExpandOnHover = () => {
               return (
                 <div
                   key={idx}
-                  className="relative cursor-pointer overflow-hidden rounded-[1.2rem] transition-all duration-500 ease-in-out flex-shrink-0"
+                  className="relative cursor-pointer overflow-hidden rounded-[1.2rem] flex-shrink-0"
                   style={{
                     width: isExpanded ? "min(24rem, 65vw)" : "3.5rem",
                     height: "min(22rem, 55vh)",
+                    transition: "width 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
+                    willChange: "width",
                   }}
                   onMouseEnter={() => setExpandedImage(idx + 1)}
                   onTouchStart={() => setExpandedImage(idx + 1)}
@@ -97,8 +99,8 @@ const ExpandOnHover = () => {
                       <p
                         className="text-white text-2xl md:text-3xl tracking-tight"
                         style={{
-                          fontFamily: "'Cormorant Garamond', Georgia, serif",
-                          fontWeight: 700,
+                          fontFamily: "var(--font-sans), system-ui, sans-serif",
+                          fontWeight: 600,
                         }}
                       >
                         {item.brand}
@@ -106,7 +108,7 @@ const ExpandOnHover = () => {
                       <p
                         className="text-white/50 text-xs md:text-sm tracking-widest uppercase mt-1"
                         style={{
-                          fontFamily: "var(--font-geist-sans), system-ui, sans-serif",
+                          fontFamily: "var(--font-sans), system-ui, sans-serif",
                           fontWeight: 300,
                         }}
                       >

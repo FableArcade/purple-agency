@@ -59,14 +59,14 @@ export default function ContactSection() {
         </p>
         <div className="flex flex-col sm:flex-row items-center md:items-start gap-4">
           <a
-            href="mailto:hello@purplepix.ai"
+            href="mailto:hello@engine.ai"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 text-white text-sm font-medium hover:bg-white/15 transition-all duration-300"
           >
             <Mail size={16} />
-            hello@purplepix.ai
+            hello@engine.ai
           </a>
           <a
-            href="mailto:hello@purplepix.ai"
+            href="mailto:hello@engine.ai"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 text-white/50 text-sm font-light hover:text-white/80 hover:border-white/20 transition-all duration-300"
           >
             Book a call
@@ -75,8 +75,8 @@ export default function ContactSection() {
       </div>
 
       {/* Right side — orbit */}
-      <div className="hidden md:flex relative w-1/2 h-[28rem] items-center justify-start overflow-hidden">
-        <div className="relative w-[44rem] h-[44rem] translate-x-[40%] flex items-center justify-center">
+      <div className="hidden md:flex relative w-1/2 h-[32rem] items-center justify-start overflow-visible">
+        <div className="relative w-[44rem] h-[44rem] translate-x-[25%] flex items-center justify-center">
           {/* Center */}
           <div className="w-16 h-16 rounded-full bg-white/[0.04] backdrop-blur-sm border border-white/10 flex items-center justify-center">
             <Zap className="w-7 h-7 text-white/60" />

@@ -7,6 +7,8 @@ import { WebGLShaderBg } from "@/components/ui/web-gl-shader";
 import HowItWorks from "@/components/ui/how-it-works";
 import ContactSection from "@/components/ui/contact-section";
 import { GLSLHills } from "@/components/ui/glsl-hills";
+import HeroWave from "@/components/ui/dynamic-wave-canvas";
+import { EtheralShadow } from "@/components/ui/etheral-shadow";
 import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 
 declare const gsap: any;
@@ -27,7 +29,7 @@ const SLIDES = [
     nav: "Work",
     title: "Work",
     description: "Campaigns at AI speed.",
-    media: "https://assets.codepen.io/7558/orange-portrait-002.jpg",
+    media: "/imm_abstract_generative_art_unhinge_shape_particle_movement_in__d9c623f6-b234-404e-a029-c540fb62d5ae.png",
     content: {
       heading: "Built Fast. Built Right.",
       body: "15 ad variants. 5 email sequences.\n3 landing pages. Full social calendar.\n\n48 hours. Every cycle smarter than the last.",
@@ -47,7 +49,7 @@ const SLIDES = [
     nav: "How",
     title: "How",
     description: "Brief in. Campaign out.",
-    media: "/how-bg.jpg",
+    media: "/Victor_Berthoud_Hundreds_of_thin_glass_plates_stacked_as_a_pile_57e0fd06-2804-49f5-8fc3-f9243242ccfc.png",
     content: {
       heading: "5 Days. Start to Live.",
       body: "Day 1 — Brief and positioning locked.\nDay 2–3 — Engine produces creative, emails, pages, social.\nDay 4 — Creative director curates. Channels configured.\nDay 5 — Live across Google, Meta, LinkedIn, email.\n\nEvery output grounded in your brand.\nNot generic AI slop.",
@@ -57,7 +59,7 @@ const SLIDES = [
     nav: "Contact",
     title: "Contact",
     description: "Let's build.",
-    media: "https://assets.codepen.io/7558/orange-portrait-005.jpg",
+    media: "/gabriel-bc_Organic_abstract_light_painting_flowing_neon_gradien_3beaa43b-d1db-47ec-9875-c0d31c52ece6.png",
     content: {
       heading: "Start Your Growth Sprint",
       body: "90 days. Strategy, content, and competitive intelligence\n— powered by an engine that gets smarter every cycle.\n\nYour startup deserves marketing\nthat moves as fast as you do.\n\nhello@purplepix.ai",
@@ -113,8 +115,8 @@ export function Component() {
           float p=uProgress;
           vec2 mOff=uMouse*0.015;
 
-          vec2 uv1=coverUV(vUv,uTex1Size)+mOff;
-          vec2 uv2=coverUV(vUv,uTex2Size)+mOff;
+          vec2 uv1=coverUV(vUv,uTex1Size)+mOff+vec2(0.0,0.05);
+          vec2 uv2=coverUV(vUv,uTex2Size)+mOff+vec2(0.0,0.05);
 
           if(uMobile>0.5){
             // Mobile: clean crossfade, no distortion, no offset
@@ -264,10 +266,16 @@ export function Component() {
         });
         document.getElementById("slideNumber")!.textContent = String(idx + 1).padStart(2, "0");
 
-        // If going TO services (idx 2), show it immediately so beams cover the bg
+        // If going TO services (idx 2), show it immediately but fade beam
         // If leaving services, hide current panel so ripple is visible
         if (idx === 2) {
           setActiveSlideRef.current(idx);
+        } else if (currentSlide === 2) {
+          // Leaving services — fade beam out first
+          setActiveSlideRef.current(-1);
+          setTimeout(() => {
+            setActiveSlideRef.current(idx);
+          }, duration * 900);
         } else {
           setActiveSlideRef.current(-1);
           setTimeout(() => {
@@ -480,24 +488,34 @@ export function Component() {
                 </p>
               </div>
             ) : i === 1 ? (
-              <ExpandOnHover />
+              <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
+                {activeSlide === 1 && <EtheralShadow color="rgba(128, 128, 128, 1)" scale={80} speed={70} opacity={0.2} />}
+                <div className="relative z-10">
+                  <ExpandOnHover />
+                </div>
+              </div>
             ) : i === 2 ? (
               <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
                 <div className="fixed inset-0 bg-black/30 z-0" />
-                <WebGLShaderBg />
+                {activeSlide === 2 && <WebGLShaderBg />}
                 <div className="relative z-10">
                   <ServiceWheel />
                 </div>
               </div>
             ) : i === 3 ? (
               <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
-                <GLSLHills speed={0.4} />
+                {activeSlide === 3 && <GLSLHills speed={0.4} />}
                 <div className="relative z-10">
                   <HowItWorks />
                 </div>
               </div>
             ) : i === 4 ? (
-              <ContactSection />
+              <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
+                {activeSlide === 4 && <HeroWave />}
+                <div className="relative z-10">
+                  <ContactSection />
+                </div>
+              </div>
             ) : (
               <div className="fixed-slide-text">
                 <h2 className="scroll-section-heading">{sl.content.heading}</h2>

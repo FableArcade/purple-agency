@@ -693,12 +693,14 @@
   z-index: 100;
   align-items: center;
   pointer-events: auto;
-  padding: 0.5rem 1.5rem;
-  border-radius: 2rem;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: none;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  padding: 0;
+  border-radius: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .slide-nav-item {
@@ -795,7 +797,11 @@
     font-size: 0.8rem;
   }
 
-  .slide-number,
+  .slide-number {
+    right: 1rem;
+    top: 4.5rem;
+  }
+
   .slide-total {
     right: 1rem;
   }
