@@ -2,13 +2,14 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import ExpandOnHover from "@/components/ui/expand-cards";
+import ServiceWheel from "@/components/ui/service-wheel";
 
 declare const gsap: any;
 declare const THREE: any;
 
 const SLIDES = [
   {
-    nav: "Purple",
+    nav: "Home",
     title: "Purple",
     description: "Full-Service Marketing, Powered by AI",
     media: "https://assets.codepen.io/7558/orange-portrait-001.jpg",
@@ -18,20 +19,10 @@ const SLIDES = [
     },
   },
   {
-    nav: "How It Works",
-    title: "The Engine",
-    description: "Brief in. Campaign out. Days, not weeks.",
-    media: "https://assets.codepen.io/7558/orange-portrait-002.jpg",
-    content: {
-      heading: "Brief In. Campaign Out.",
-      body: "Day 1 — Brief and positioning locked.\nDays 2–3 — Engine produces ad creative, email sequences, landing pages, and social content.\nDay 4 — Creative director curates. Growth marketer sets up channels.\nDay 5 — Campaigns live across Google, Meta, LinkedIn, and email.\nEvery output grounded in your brand. Not generic AI slop.",
-    },
-  },
-  {
     nav: "Work",
     title: "Our Work",
     description: "15 ad variants. 3 landing pages. 5 days.",
-    media: "https://assets.codepen.io/7558/orange-portrait-003.jpg",
+    media: "https://assets.codepen.io/7558/orange-portrait-002.jpg",
     content: {
       heading: "Built at AI Speed",
       body: "15 ad variants. 5 email sequences. 3 landing pages. Full social calendar.\nIn 48 hours.\nEach campaign makes the engine smarter for your next one.",
@@ -40,16 +31,26 @@ const SLIDES = [
   {
     nav: "Services",
     title: "Services",
-    description: "Start from $5K/month",
-    media: "https://assets.codepen.io/7558/orange-portrait-004.jpg",
+    description: "Every channel works together.",
+    media: "https://assets.codepen.io/7558/orange-portrait-003.jpg",
     content: {
-      heading: "Start with a Growth Sprint",
-      body: "Growth Sprint — from $5K/mo. 90 days. Brand strategy, content, competitive intel, and GEO audit. For startups ready to launch.\nGrowth Engine — Scaled delivery. Everything above plus paid media, email, social, SEO, landing pages, and reporting.\nEmbedded Pod — Full-service. Video, creative testing, CRO, and custom development.\nOutcome-priced retainers. Not billable hours.\nEvery client starts here. Results at 90 days unlock the next tier.",
+      heading: "Our Services",
+      body: "",
     },
   },
   {
-    nav: "Let's Talk",
-    title: "Let's Talk",
+    nav: "How It Works",
+    title: "The Engine",
+    description: "Brief in. Campaign out. Days, not weeks.",
+    media: "https://assets.codepen.io/7558/orange-portrait-004.jpg",
+    content: {
+      heading: "Brief In. Campaign Out.",
+      body: "Day 1 — Brief and positioning locked.\nDays 2–3 — Engine produces ad creative, email sequences, landing pages, and social content.\nDay 4 — Creative director curates. Growth marketer sets up channels.\nDay 5 — Campaigns live across Google, Meta, LinkedIn, and email.\nEvery output grounded in your brand. Not generic AI slop.",
+    },
+  },
+  {
+    nav: "Contact",
+    title: "Contact",
     description: "90 days to prove it.",
     media: "https://assets.codepen.io/7558/orange-portrait-005.jpg",
     content: {
@@ -418,8 +419,21 @@ export function Component() {
             key={i}
             className={`fixed-slide-panel ${activeSlide === i ? "active" : ""}`}
           >
-            {i === 2 ? (
-              <ExpandOnHover />
+            {i === 1 ? (
+              <div className="fixed-slide-text">
+                <h2 className="scroll-section-heading">{sl.content.heading}</h2>
+                <p
+                  className="scroll-section-text"
+                  dangerouslySetInnerHTML={{
+                    __html: sl.content.body.replace(/\n/g, "<br />"),
+                  }}
+                />
+                <div className="mt-8">
+                  <ExpandOnHover />
+                </div>
+              </div>
+            ) : i === 2 ? (
+              <ServiceWheel />
             ) : (
               <div className="fixed-slide-text">
                 <h2 className="scroll-section-heading">{sl.content.heading}</h2>

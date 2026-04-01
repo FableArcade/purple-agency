@@ -7,7 +7,6 @@ import {
   Target,
   Mail,
   Code,
-  ChevronRight,
 } from "lucide-react";
 import { LiquidGlassNode, GlassButtonFilter } from "@/components/ui/liquid-glass-button";
 
@@ -118,7 +117,7 @@ export default function ServiceWheel() {
   const getNodePosition = (index: number) => {
     const total = SERVICES.length;
     const angle = ((index / total) * 360 + rotationAngle) % 360;
-    const radius = 180;
+    const radius = 260;
     const radian = (angle * Math.PI) / 180;
     const x = radius * Math.cos(radian);
     const y = radius * Math.sin(radian);
@@ -135,17 +134,9 @@ export default function ServiceWheel() {
     >
       <GlassButtonFilter />
 
-      {/* Center core */}
-      <div className="absolute w-14 h-14 rounded-full flex items-center justify-center z-10 pointer-events-none">
-        <div className="w-14 h-14 rounded-full bg-white/5 backdrop-blur-md border border-white/10 flex items-center justify-center">
-          <div className="w-6 h-6 rounded-full bg-white/15 backdrop-blur-sm" />
-        </div>
-        <div className="absolute w-18 h-18 rounded-full border border-white/8 animate-ping opacity-40" />
-      </div>
-
       {/* Orbit ring */}
-      <svg className="sw-orbit-ring" viewBox="-250 -250 500 500">
-        <circle cx={0} cy={0} r={180} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={1} strokeDasharray="4 8" />
+      <svg className="sw-orbit-ring" viewBox="-320 -320 640 640">
+        <circle cx={0} cy={0} r={260} fill="none" stroke="rgba(0,0,0,0.06)" strokeWidth={1} strokeDasharray="4 8" />
       </svg>
 
       {/* Nodes */}
@@ -172,13 +163,13 @@ export default function ServiceWheel() {
                 handleNodeClick(service.id, i);
               }}
             >
-              <Icon size={isActive ? 22 : 18} strokeWidth={1.5} className="text-white/80" />
+              <Icon size={isActive ? 22 : 18} strokeWidth={1.5} className="text-black/70" />
             </LiquidGlassNode>
 
             {/* Label */}
             <div
-              className={`absolute top-[80px] left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium tracking-wider uppercase transition-all duration-300 ${
-                isActive ? "text-white" : "text-white/50"
+              className={`absolute top-[80px] left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium tracking-wider uppercase transition-all duration-300 text-center ${
+                isActive ? "text-black" : "text-black/40"
               }`}
             >
               {service.label}
@@ -195,8 +186,7 @@ export default function ServiceWheel() {
                       e.stopPropagation();
                     }}
                   >
-                    <span>{sub.label}</span>
-                    <ChevronRight size={14} className="sw-dropdown-arrow" />
+                    {sub.label}
                   </button>
                 ))}
               </div>
