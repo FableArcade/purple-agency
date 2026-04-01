@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   FileText,
   Sparkles,
@@ -87,14 +87,17 @@ function StepItem({
   index: number;
   direction: "left" | "right";
 }) {
+  const [expanded, setExpanded] = useState(false);
+
   return (
     <motion.div
-      className="flex flex-col group"
+      className="flex flex-col group cursor-pointer sm:cursor-default"
       variants={itemVariants}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      onClick={() => setExpanded((prev) => !prev)}
     >
       <motion.div
-        className="flex items-center gap-3 mb-3"
+        className="flex items-center gap-3 mb-2 sm:mb-3"
         initial={{ x: direction === "left" ? -20 : 20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
@@ -109,9 +112,28 @@ function StepItem({
           {title}
         </h3>
       </motion.div>
-      <motion.p className="hidden sm:block text-xs sm:text-base text-white/65 leading-relaxed pl-[3.25rem]">
+      {/* Desktop: always show */}
+      <p className="hidden sm:block text-base text-white/65 leading-relaxed pl-[3.25rem]">
         {description}
-      </motion.p>
+      </p>
+      {/* Mobile: glass bubble on tap */}
+      {expanded && (
+        <motion.div
+          className="sm:hidden ml-[3.25rem] mt-1 mb-2 px-4 py-3 rounded-2xl text-xs text-white/70 leading-relaxed"
+          style={{
+            background: "rgba(255, 255, 255, 0.06)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08), 0 8px 24px rgba(0,0,0,0.2)",
+          }}
+          initial={{ opacity: 0, y: -8, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+        >
+          {description}
+        </motion.div>
+      )}
     </motion.div>
   );
 }

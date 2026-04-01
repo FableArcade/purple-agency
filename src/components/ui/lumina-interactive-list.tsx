@@ -473,7 +473,7 @@ export function Component() {
                   </div>
                 </div>
                 <p className="text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed font-light tracking-wide max-w-xl mx-auto text-center mt-0">
-                  AI engine. Human direction. Campaigns live in days.
+                  AI engine. Human direction.<br className="sm:hidden" /> Campaigns live in days.
                 </p>
               </div>
             ) : i === 1 ? (

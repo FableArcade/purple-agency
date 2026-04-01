@@ -89,14 +89,15 @@ export default function ServiceWheel() {
     setIsMobile(window.innerWidth < 640);
   }, []);
 
-  // Auto-rotation
+  // Auto-rotation — use slower interval on mobile
   useEffect(() => {
     if (!autoRotate) return;
+    const interval = isMobile ? 80 : 50;
     const timer = setInterval(() => {
       setRotationAngle((prev) => (prev + 0.3) % 360);
-    }, 50);
+    }, interval);
     return () => clearInterval(timer);
-  }, [autoRotate]);
+  }, [autoRotate, isMobile]);
 
   // Click anywhere outside a node to deselect
   useEffect(() => {
