@@ -168,8 +168,8 @@ export default function ServiceWheel() {
 
             {/* Label */}
             <div
-              className={`absolute top-[80px] left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium tracking-wider uppercase transition-all duration-300 text-center ${
-                isActive ? "text-black" : "text-black/40"
+              className={`absolute top-[80px] left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium tracking-wider uppercase transition-all duration-300 text-center sw-node-label ${
+                isActive ? "" : ""
               }`}
             >
               {service.label}

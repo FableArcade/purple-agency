@@ -98,19 +98,20 @@
 }
 
 .sw-node-label {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 0.6rem;
   font-weight: 400;
-  color: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.5);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   white-space: nowrap;
   transition: all 0.3s ease;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .sw-node:hover .sw-node-label,
 .sw-node.active .sw-node-label {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Glass dropdown */
@@ -164,7 +165,7 @@
   padding: 10px 14px;
   border-radius: 10px;
   color: rgba(0, 0, 0, 0.5);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: 0.85rem;
   font-weight: 300;
   letter-spacing: 0.02em;
@@ -641,11 +642,12 @@
 }
 
 .fixed-slide-text {
-  max-width: 900px;
+  max-width: 640px;
   width: 100%;
-  padding: 2.5rem;
+  padding: 2rem;
   text-align: center;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 .scroll-section-label {
@@ -653,32 +655,34 @@
 }
 
 .scroll-section-heading {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 300;
+  font-family: var(--font-heading), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 400;
   color: #fff;
   margin: 0 0 1.5rem 0;
-  line-height: 1.1;
-  white-space: nowrap;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  line-height: 1.15;
+  text-align: center;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
 }
 
 .scroll-section-text {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: clamp(0.9rem, 1.2vw, 1.05rem);
   font-weight: 300;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
   white-space: pre-line;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.01em;
 }
 
 .slide-number {
   position: absolute;
   top: 2rem;
   right: 2.5rem;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: clamp(10px, 1.2vw, 12px);
   letter-spacing: 0.15em;
   color: rgba(255, 255, 255, 0.5);
@@ -689,7 +693,7 @@
   position: absolute;
   bottom: 2rem;
   right: 2.5rem;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: clamp(10px, 1.2vw, 12px);
   letter-spacing: 0.15em;
   color: rgba(255, 255, 255, 0.3);
@@ -701,7 +705,7 @@
 }
 
 .slide-title {
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: var(--font-heading), "Cormorant Garamond", Georgia, serif;
   font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 300;
   line-height: 1.1;
@@ -711,14 +715,7 @@
 }
 
 .slide-description {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: clamp(0.8rem, 1.2vw, 1rem);
-  font-weight: 300;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0;
-  white-space: nowrap;
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
+  display: none;
 }
 
 .slides-navigation {
@@ -768,13 +765,14 @@
 }
 
 .slide-nav-title {
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-sans), system-ui, sans-serif;
   font-size: clamp(9px, 1vw, 11px);
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
   white-space: nowrap;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 400;
 }
 
 /* ===== Mobile Responsive ===== */
@@ -803,13 +801,16 @@
   }
 
   .scroll-section-heading {
-    font-size: clamp(1.8rem, 8vw, 2.5rem);
-    white-space: normal;
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
   }
 
   .scroll-section-text {
-    font-size: 0.9rem;
-    white-space: normal;
+    font-size: 0.85rem;
+  }
+
+  .fixed-slide-text {
+    max-width: 100%;
+    padding: 1.5rem;
   }
 
   .slide-description {
