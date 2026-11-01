@@ -2,59 +2,242 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import ExpandOnHover from "@/components/ui/expand-cards";
+import { GlassEffect, GlassFilter } from "@/components/ui/liquid-glass";
 
 declare const gsap: any;
+
+const NEWS_ARTICLES = [
+  {
+    headline: "Waititi Inks First-Look Deal With 20th\u00A0TV, FX\u00A0Prods. & Hulu",
+    source: "Deadline",
+    date: "November 2025",
+    summary:
+      "Taika Waititi has signed a first-look deal with 20th Television, FX Productions, and Hulu to develop new original projects. Under the pact, Waititi will develop and direct series with priority given to Disney Entertainment Television platforms.",
+    url: "https://deadline.com/2025/11/taika-waititi-deal-20th-tv-fx-hulu-last-look-jason-kim-1236621919/",
+  },
+  {
+    headline: "'Last Look' Fashion Comedy in Development at Hulu",
+    source: "Deadline",
+    date: "November 2025",
+    summary:
+      "A half-hour comedy co-created with Barry writer-producer Jason Kim. A modern upstairs/downstairs story set in a luxury fashion house — following the underdogs who make the fashions and the fabulous monsters who design them.",
+    url: "https://deadline.com/2025/11/taika-waititi-deal-20th-tv-fx-hulu-last-look-jason-kim-1236621919/",
+  },
+  {
+    headline: "'Very Young Frankenstein' Pilot at FX",
+    source: "Deadline",
+    date: "November 2025",
+    summary:
+      "Waititi directed and executive produced the FX pilot inspired by Mel Brooks' 1974 film, currently in contention for a series pickup at 20th Television.",
+    url: "https://deadline.com/2025/11/taika-waititi-deal-20th-tv-fx-hulu-last-look-jason-kim-1236621919/",
+  },
+];
+
+function NewsSection() {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+
+  return (
+    <div className="w-full flex flex-col items-center gap-4 md:gap-6 px-4 md:px-10">
+      <GlassFilter />
+      <h2
+        className="scroll-section-heading"
+        style={{ maxWidth: "none", marginBottom: "0", fontSize: "clamp(1.8rem, 5vw, 6rem)" }}
+      >
+        In the Press
+      </h2>
+      <div className="flex flex-col gap-2 md:gap-4 w-full max-w-3xl">
+        {NEWS_ARTICLES.map((article, i) => {
+          const isOpen = openIdx === i;
+          return (
+            <div key={i}>
+              {/* Mobile: collapsed accordion */}
+              <div className="md:hidden">
+                <GlassEffect className="rounded-xl">
+                  <button
+                    className="relative z-30 w-full text-left p-4 flex items-center justify-between gap-3"
+                    onClick={() => setOpenIdx(isOpen ? null : i)}
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span
+                          className="text-[9px] tracking-[0.3em] uppercase"
+                          style={{
+                            fontFamily: "var(--font-geist-sans)",
+                            fontWeight: 500,
+                            color: "rgba(245, 240, 232, 0.5)",
+                          }}
+                        >
+                          {article.source}
+                        </span>
+                        <span
+                          className="text-[9px]"
+                          style={{
+                            fontFamily: "var(--font-geist-sans)",
+                            fontWeight: 400,
+                            color: "rgba(245, 240, 232, 0.35)",
+                          }}
+                        >
+                          {article.date}
+                        </span>
+                      </div>
+                      <h3
+                        className="text-sm text-white leading-snug"
+                        style={{
+                          fontFamily: "var(--font-display), Georgia, serif",
+                          fontStyle: "italic",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {article.headline}
+                      </h3>
+                    </div>
+                    <span
+                      className="text-white/40 text-lg flex-shrink-0 transition-transform duration-300"
+                      style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0)" }}
+                    >
+                      ▾
+                    </span>
+                  </button>
+                  <div
+                    className="overflow-hidden transition-all duration-300 ease-in-out"
+                    style={{ maxHeight: isOpen ? "12rem" : "0" }}
+                  >
+                    <div className="relative z-30 px-4 pb-4 flex flex-col gap-2">
+                      <p
+                        className="text-xs leading-relaxed"
+                        style={{
+                          fontFamily: "var(--font-geist-sans)",
+                          fontWeight: 400,
+                          color: "rgba(245, 240, 232, 0.7)",
+                        }}
+                      >
+                        {article.summary}
+                      </p>
+                      <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] tracking-[0.25em] uppercase self-start"
+                        style={{
+                          fontFamily: "var(--font-geist-sans)",
+                          fontWeight: 600,
+                          color: "rgba(245, 240, 232, 0.85)",
+                          borderBottom: "1px solid rgba(245, 240, 232, 0.3)",
+                          paddingBottom: "2px",
+                        }}
+                      >
+                        Read on {article.source} →
+                      </a>
+                    </div>
+                  </div>
+                </GlassEffect>
+              </div>
+
+              {/* Desktop: full cards */}
+              <a
+                href={article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:block transition-transform hover:scale-[1.015]"
+              >
+                <GlassEffect className="rounded-2xl p-8">
+                  <div className="relative z-30 flex flex-col gap-2">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="text-[11px] tracking-[0.3em] uppercase"
+                        style={{
+                          fontFamily: "var(--font-geist-sans)",
+                          fontWeight: 500,
+                          color: "rgba(245, 240, 232, 0.5)",
+                        }}
+                      >
+                        {article.source}
+                      </span>
+                      <span
+                        className="text-[11px]"
+                        style={{
+                          fontFamily: "var(--font-geist-sans)",
+                          fontWeight: 400,
+                          color: "rgba(245, 240, 232, 0.35)",
+                        }}
+                      >
+                        {article.date}
+                      </span>
+                    </div>
+                    <h3
+                      className="text-2xl text-white"
+                      style={{
+                        fontFamily: "var(--font-display), Georgia, serif",
+                        fontStyle: "italic",
+                        fontWeight: 500,
+                        letterSpacing: "-0.01em",
+                        lineHeight: 1.15,
+                      }}
+                    >
+                      {article.headline}
+                    </h3>
+                    <p
+                      className="text-[0.95rem]"
+                      style={{
+                        fontFamily: "var(--font-geist-sans)",
+                        fontWeight: 400,
+                        lineHeight: 1.6,
+                        color: "rgba(245, 240, 232, 0.7)",
+                      }}
+                    >
+                      {article.summary}
+                    </p>
+                  </div>
+                </GlassEffect>
+              </a>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 declare const THREE: any;
 
 const SLIDES = [
   {
-    nav: "Purple",
-    title: "Purple",
-    description: "Brief in. Campaign out. Days, not weeks.",
-    media: "/slide-hero.jpg",
+    nav: "Home",
+    title: "Waititi Productions",
+    description: "Bold, original film and television from voices Hollywood overlooks.",
+    media: "/films/hero.webp",
     content: {
-      heading: "Your AI Marketing Engine",
-      body: "We build and operate a proprietary AI engine that produces strategy, content, creative, and campaigns — generating 80%+ of all marketing output with senior human direction on top.\n85% of marketing executives are reviewing agency contracts in 2026. The old model is breaking. We built the new one.",
+      heading: "Stories Told from the Edges",
+      body: "Founded by Academy Award–winning filmmaker Taika\u00A0Waititi and led by Ishi\u00A0Metkar and Michelle\u00A0Chan, we build film and television that is sharp, irreverent, and unmistakably alive.",
     },
   },
   {
-    nav: "Engine",
-    title: "The Engine",
-    description: "80% AI-produced. 100% human-directed.",
-    media: "/slide-engine.jpg",
+    nav: "About",
+    title: "About",
+    description: "Working-class, rural, indigenous, underrepresented — by design.",
+    media: "/films/about.jpg",
     content: {
-      heading: "Five Capability Layers",
-      body: "Predict — competitive intel, audience analysis, performance forecasting.\nImagine — copy, image, video, landing pages. Brand-grounded at volume.\nUnderstand — brand knowledge system. Every output grounded in your truth.\nAct — agentic workflows that execute across every channel.\nEvolve — closed-loop learning. Every campaign makes the engine smarter.",
+      heading: "Who We Are",
+      body: "Waititi Productions is dedicated to producing bold, original film and television projects that spotlight voices and stories too often excluded from Hollywood — particularly those from working-class backgrounds and rural or underrepresented parts of the world.\n\nBy pairing sharp, irreverent storytelling with authentic cultural representation, we strive to create work that is both entertaining and deeply resonant — expanding access, building opportunity, and redefining whose stories get told on screen.",
     },
   },
   {
-    nav: "Results",
-    title: "Results",
-    description: "From brief to live campaigns in 5 days.",
-    media: "/slide-results.jpg",
+    nav: "Productions",
+    title: "Productions",
+    description: "Selected works — feature films and series.",
+    media: "/films/productions.webp",
     content: {
-      heading: "1 Startup. 5 Days.",
-      body: "Day 1: Brief + positioning.\nDays 2–3: Engine produces 15 ad variants, 5 email sequences, 3 landing pages, full social calendar.\nDay 4: Creative director curates, growth marketer deploys.\nDay 5: Campaigns live across Google, Meta, LinkedIn, email.\nOutcome-priced retainers, not billable hours.",
+      heading: "Selected Works",
+      body: "",
     },
   },
   {
-    nav: "Services",
-    title: "Services",
-    description: "Three tiers. One clear entry point.",
-    media: "/slide-services.jpg",
+    nav: "News",
+    title: "News",
+    description: "What's in development, on set, and on screen.",
+    media: "/films/news.webp",
     content: {
-      heading: "Built for Startups",
-      body: "Growth Sprint — $15–25K/mo. 90-day engagement. Brand strategy, content, competitive intel, GEO audit. Results at 90 days.\nGrowth Engine — $30–75K/mo. Everything plus paid media, email, landing pages, social, SEO, reporting.\nEmbedded Pod — $75–150K/mo. Full-service including video, campaign strategy, CRO, custom development.",
-    },
-  },
-  {
-    nav: "Start",
-    title: "Start",
-    description: "Every client begins with a Growth Sprint.",
-    media: "/slide-start.jpg",
-    content: {
-      heading: "Start Your Growth Sprint",
-      body: "90 days. Strategy, content, and competitive intelligence — powered by an engine that gets smarter every cycle.\nYour startup deserves marketing that moves as fast as you do.\nLet's build your growth engine.",
+      heading: "In the Press",
+      body: "",
     },
   },
 ];
@@ -108,7 +291,7 @@ export function Component() {
           vec2 mOff=uMouse*0.03;
 
           vec2 uv1=coverUV(vUv,uTex1Size)+mOff;
-          vec2 uv2=coverUV(vUv,uTex2Size)+mOff*0.6;
+          vec2 uv2=coverUV(vUv,uTex2Size)+mOff;
 
           if(uMobile>0.5){
             // Mobile: clean crossfade, no distortion, no offset
@@ -188,29 +371,7 @@ export function Component() {
 
       const canvasEl = canvas;
 
-      // Scroll-driven zoom via CSS transform on canvas
-      let zoomScale = 1;
-      let zoomLastY = window.scrollY;
-
-      const onZoomScroll = () => {
-        if (isAnimating) return;
-        const delta = window.scrollY - zoomLastY;
-        zoomLastY = window.scrollY;
-        if (Math.abs(delta) > 2) {
-          zoomScale = Math.min(1.08, zoomScale + Math.abs(delta) * 0.0005);
-        }
-      };
-      window.addEventListener("scroll", onZoomScroll, { passive: true });
-
-      const zoomTick = () => {
-        requestAnimationFrame(zoomTick);
-        zoomScale += (1.0 - zoomScale) * 0.02;
-        if (zoomScale < 1.001) zoomScale = 1;
-        if (!isAnimating) {
-          canvasEl.style.transform = `scale(${zoomScale})`;
-        }
-      };
-      zoomTick();
+      canvasEl.style.transform = "scale(1)";
 
       // --- RENDER ---
       let animating = false;
@@ -249,7 +410,8 @@ export function Component() {
           const fill = el.querySelector(".slide-progress-fill") as HTMLElement;
           if (fill) { fill.style.width = i === idx ? "100%" : "0%"; }
         });
-        document.getElementById("slideNumber")!.textContent = String(idx + 1).padStart(2, "0");
+        const numEl = document.getElementById("slideNumber");
+        if (numEl) numEl.textContent = String(idx + 1).padStart(2, "0");
 
         // Switch text content at midpoint
         setTimeout(() => {
@@ -265,8 +427,6 @@ export function Component() {
           shaderMat.uniforms.uTex2.value = textures[idx];
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
-          zoomScale = 1;
-          canvasEl.style.transform = "scale(1)";
           startRenderLoop();
 
           gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
@@ -280,7 +440,6 @@ export function Component() {
               stopRenderLoop();
               currentSlide = idx;
               isAnimating = false;
-              zoomLastY = window.scrollY;
             },
           });
         } else {
@@ -323,8 +482,6 @@ export function Component() {
       // Init text
       document.getElementById("mainTitle")!.textContent = SLIDES[0].title;
       document.getElementById("mainDesc")!.textContent = SLIDES[0].description;
-      document.getElementById("slideNumber")!.textContent = "01";
-      document.getElementById("slideTotal")!.textContent = String(SLIDES.length).padStart(2, "0");
 
       // --- SCROLL DRIVEN ---
       const SECTION_H = () => window.innerHeight * 3;
@@ -385,14 +542,18 @@ export function Component() {
 
   return (
     <div ref={containerRef} className="lumina-slider-root">
+      <a href="#" className="studio-wordmark">
+        <span className="dot" />
+        Waititi Productions
+        <span className="mark-sub">Est. MMXXIV</span>
+      </a>
+      <span className="studio-location">Los Angeles, California</span>
       {/* Fixed background: canvas + WebGL */}
       <div className="slider-fixed-layer">
         <main className="slider-wrapper">
           <div className="mobile-bg" />
           <div className="mobile-bg-next" />
           <canvas className="webgl-canvas" />
-          <span className="slide-number" id="slideNumber">01</span>
-          <span className="slide-total" id="slideTotal">05</span>
           <div className="slide-content">
             <h1 className="slide-title" id="mainTitle"></h1>
             <p className="slide-description" id="mainDesc"></p>
@@ -409,15 +570,19 @@ export function Component() {
           >
             {i === 2 ? (
               <ExpandOnHover />
+            ) : i === 3 ? (
+              <NewsSection />
             ) : (
               <div className="fixed-slide-text">
                 <h2 className="scroll-section-heading">{sl.content.heading}</h2>
-                <p
-                  className="scroll-section-text"
-                  dangerouslySetInnerHTML={{
-                    __html: sl.content.body.replace(/\n/g, "<br />"),
-                  }}
-                />
+                <p className="scroll-section-text">
+                  {sl.content.body.split("\n").map((line, j, arr) => (
+                    <React.Fragment key={j}>
+                      {line}
+                      {j < arr.length - 1 && <br />}
+                    </React.Fragment>
+                  ))}
+                </p>
               </div>
             )}
           </div>
