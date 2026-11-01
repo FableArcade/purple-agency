@@ -2,242 +2,67 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import ExpandOnHover from "@/components/ui/expand-cards";
-import { GlassEffect, GlassFilter } from "@/components/ui/liquid-glass";
+import ServiceWheel from "@/components/ui/service-wheel";
+import { WebGLShaderBg } from "@/components/ui/web-gl-shader";
+import HowItWorks from "@/components/ui/how-it-works";
+import ContactSection from "@/components/ui/contact-section";
+import { GLSLHills } from "@/components/ui/glsl-hills";
+import HeroWave from "@/components/ui/dynamic-wave-canvas";
+import { EtheralShadow } from "@/components/ui/etheral-shadow";
+import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 
 declare const gsap: any;
-
-const NEWS_ARTICLES = [
-  {
-    headline: "Waititi Inks First-Look Deal With 20th\u00A0TV, FX\u00A0Prods. & Hulu",
-    source: "Deadline",
-    date: "November 2025",
-    summary:
-      "Taika Waititi has signed a first-look deal with 20th Television, FX Productions, and Hulu to develop new original projects. Under the pact, Waititi will develop and direct series with priority given to Disney Entertainment Television platforms.",
-    url: "https://deadline.com/2025/11/taika-waititi-deal-20th-tv-fx-hulu-last-look-jason-kim-1236621919/",
-  },
-  {
-    headline: "'Last Look' Fashion Comedy in Development at Hulu",
-    source: "Deadline",
-    date: "November 2025",
-    summary:
-      "A half-hour comedy co-created with Barry writer-producer Jason Kim. A modern upstairs/downstairs story set in a luxury fashion house — following the underdogs who make the fashions and the fabulous monsters who design them.",
-    url: "https://deadline.com/2025/11/taika-waititi-deal-20th-tv-fx-hulu-last-look-jason-kim-1236621919/",
-  },
-  {
-    headline: "'Very Young Frankenstein' Pilot at FX",
-    source: "Deadline",
-    date: "November 2025",
-    summary:
-      "Waititi directed and executive produced the FX pilot inspired by Mel Brooks' 1974 film, currently in contention for a series pickup at 20th Television.",
-    url: "https://deadline.com/2025/11/taika-waititi-deal-20th-tv-fx-hulu-last-look-jason-kim-1236621919/",
-  },
-];
-
-function NewsSection() {
-  const [openIdx, setOpenIdx] = useState<number | null>(null);
-
-  return (
-    <div className="w-full flex flex-col items-center gap-4 md:gap-6 px-4 md:px-10">
-      <GlassFilter />
-      <h2
-        className="scroll-section-heading"
-        style={{ maxWidth: "none", marginBottom: "0", fontSize: "clamp(1.8rem, 5vw, 6rem)" }}
-      >
-        In the Press
-      </h2>
-      <div className="flex flex-col gap-2 md:gap-4 w-full max-w-3xl">
-        {NEWS_ARTICLES.map((article, i) => {
-          const isOpen = openIdx === i;
-          return (
-            <div key={i}>
-              {/* Mobile: collapsed accordion */}
-              <div className="md:hidden">
-                <GlassEffect className="rounded-xl">
-                  <button
-                    className="relative z-30 w-full text-left p-4 flex items-center justify-between gap-3"
-                    onClick={() => setOpenIdx(isOpen ? null : i)}
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span
-                          className="text-[9px] tracking-[0.3em] uppercase"
-                          style={{
-                            fontFamily: "var(--font-geist-sans)",
-                            fontWeight: 500,
-                            color: "rgba(245, 240, 232, 0.5)",
-                          }}
-                        >
-                          {article.source}
-                        </span>
-                        <span
-                          className="text-[9px]"
-                          style={{
-                            fontFamily: "var(--font-geist-sans)",
-                            fontWeight: 400,
-                            color: "rgba(245, 240, 232, 0.35)",
-                          }}
-                        >
-                          {article.date}
-                        </span>
-                      </div>
-                      <h3
-                        className="text-sm text-white leading-snug"
-                        style={{
-                          fontFamily: "var(--font-display), Georgia, serif",
-                          fontStyle: "italic",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {article.headline}
-                      </h3>
-                    </div>
-                    <span
-                      className="text-white/40 text-lg flex-shrink-0 transition-transform duration-300"
-                      style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0)" }}
-                    >
-                      ▾
-                    </span>
-                  </button>
-                  <div
-                    className="overflow-hidden transition-all duration-300 ease-in-out"
-                    style={{ maxHeight: isOpen ? "12rem" : "0" }}
-                  >
-                    <div className="relative z-30 px-4 pb-4 flex flex-col gap-2">
-                      <p
-                        className="text-xs leading-relaxed"
-                        style={{
-                          fontFamily: "var(--font-geist-sans)",
-                          fontWeight: 400,
-                          color: "rgba(245, 240, 232, 0.7)",
-                        }}
-                      >
-                        {article.summary}
-                      </p>
-                      <a
-                        href={article.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[10px] tracking-[0.25em] uppercase self-start"
-                        style={{
-                          fontFamily: "var(--font-geist-sans)",
-                          fontWeight: 600,
-                          color: "rgba(245, 240, 232, 0.85)",
-                          borderBottom: "1px solid rgba(245, 240, 232, 0.3)",
-                          paddingBottom: "2px",
-                        }}
-                      >
-                        Read on {article.source} →
-                      </a>
-                    </div>
-                  </div>
-                </GlassEffect>
-              </div>
-
-              {/* Desktop: full cards */}
-              <a
-                href={article.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden md:block transition-transform hover:scale-[1.015]"
-              >
-                <GlassEffect className="rounded-2xl p-8">
-                  <div className="relative z-30 flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                      <span
-                        className="text-[11px] tracking-[0.3em] uppercase"
-                        style={{
-                          fontFamily: "var(--font-geist-sans)",
-                          fontWeight: 500,
-                          color: "rgba(245, 240, 232, 0.5)",
-                        }}
-                      >
-                        {article.source}
-                      </span>
-                      <span
-                        className="text-[11px]"
-                        style={{
-                          fontFamily: "var(--font-geist-sans)",
-                          fontWeight: 400,
-                          color: "rgba(245, 240, 232, 0.35)",
-                        }}
-                      >
-                        {article.date}
-                      </span>
-                    </div>
-                    <h3
-                      className="text-2xl text-white"
-                      style={{
-                        fontFamily: "var(--font-display), Georgia, serif",
-                        fontStyle: "italic",
-                        fontWeight: 500,
-                        letterSpacing: "-0.01em",
-                        lineHeight: 1.15,
-                      }}
-                    >
-                      {article.headline}
-                    </h3>
-                    <p
-                      className="text-[0.95rem]"
-                      style={{
-                        fontFamily: "var(--font-geist-sans)",
-                        fontWeight: 400,
-                        lineHeight: 1.6,
-                        color: "rgba(245, 240, 232, 0.7)",
-                      }}
-                    >
-                      {article.summary}
-                    </p>
-                  </div>
-                </GlassEffect>
-              </a>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
 declare const THREE: any;
 
 const SLIDES = [
   {
     nav: "Home",
-    title: "Waititi Productions",
-    description: "Bold, original film and television from voices Hollywood overlooks.",
-    media: "/films/hero.webp",
+    title: "Purple",
+    description: "AI Marketing Engine",
+    media: "https://assets.codepen.io/7558/orange-portrait-001.jpg",
     content: {
-      heading: "Stories Told from the Edges",
-      body: "Founded by Academy Award–winning filmmaker Taika\u00A0Waititi and led by Ishi\u00A0Metkar and Michelle\u00A0Chan, we build film and television that is sharp, irreverent, and unmistakably alive.",
+      heading: "Marketing That Moves",
+      body: "Strategy, content, creative, and campaigns\n— live in days, not weeks.\n\n80%+ produced by AI. 100% directed by humans.\nBuilt for startups. Priced on outcomes.",
     },
   },
   {
-    nav: "About",
-    title: "About",
-    description: "Working-class, rural, indigenous, underrepresented — by design.",
-    media: "/films/about.jpg",
+    nav: "Work",
+    title: "Work",
+    description: "Campaigns at AI speed.",
+    media: "/imm_abstract_generative_art_unhinge_shape_particle_movement_in__d9c623f6-b234-404e-a029-c540fb62d5ae.png",
     content: {
-      heading: "Who We Are",
-      body: "Waititi Productions is dedicated to producing bold, original film and television projects that spotlight voices and stories too often excluded from Hollywood — particularly those from working-class backgrounds and rural or underrepresented parts of the world.\n\nBy pairing sharp, irreverent storytelling with authentic cultural representation, we strive to create work that is both entertaining and deeply resonant — expanding access, building opportunity, and redefining whose stories get told on screen.",
+      heading: "Built Fast. Built Right.",
+      body: "15 ad variants. 5 email sequences.\n3 landing pages. Full social calendar.\n\n48 hours. Every cycle smarter than the last.",
     },
   },
   {
-    nav: "Productions",
-    title: "Productions",
-    description: "Selected works — feature films and series.",
-    media: "/films/productions.webp",
+    nav: "Services",
+    title: "Services",
+    description: "Every channel, connected.",
+    media: "https://assets.codepen.io/7558/orange-portrait-003.jpg",
     content: {
-      heading: "Selected Works",
+      heading: "",
       body: "",
     },
   },
   {
-    nav: "News",
-    title: "News",
-    description: "What's in development, on set, and on screen.",
-    media: "/films/news.webp",
+    nav: "How",
+    title: "How",
+    description: "Brief in. Campaign out.",
+    media: "/Victor_Berthoud_Hundreds_of_thin_glass_plates_stacked_as_a_pile_57e0fd06-2804-49f5-8fc3-f9243242ccfc.png",
     content: {
-      heading: "In the Press",
-      body: "",
+      heading: "5 Days. Start to Live.",
+      body: "Day 1 — Brief and positioning locked.\nDay 2–3 — Engine produces creative, emails, pages, social.\nDay 4 — Creative director curates. Channels configured.\nDay 5 — Live across Google, Meta, LinkedIn, email.\n\nEvery output grounded in your brand.\nNot generic AI slop.",
+    },
+  },
+  {
+    nav: "Contact",
+    title: "Contact",
+    description: "Let's build.",
+    media: "/gabriel-bc_Organic_abstract_light_painting_flowing_neon_gradien_3beaa43b-d1db-47ec-9875-c0d31c52ece6.png",
+    content: {
+      heading: "Start Your Growth Sprint",
+      body: "90 days. Strategy, content, and competitive intelligence\n— powered by an engine that gets smarter every cycle.\n\nYour startup deserves marketing\nthat moves as fast as you do.\n\nhello@purplepix.ai",
     },
   },
 ];
@@ -288,10 +113,10 @@ export function Component() {
 
         void main(){
           float p=uProgress;
-          vec2 mOff=uMouse*0.03;
+          vec2 mOff=uMouse*0.015;
 
-          vec2 uv1=coverUV(vUv,uTex1Size)+mOff;
-          vec2 uv2=coverUV(vUv,uTex2Size)+mOff;
+          vec2 uv1=coverUV(vUv,uTex1Size)+mOff+vec2(0.0,0.12);
+          vec2 uv2=coverUV(vUv,uTex2Size)+mOff+vec2(0.0,0.12);
 
           if(uMobile>0.5){
             // Mobile: clean crossfade, no distortion, no offset
@@ -300,13 +125,7 @@ export function Component() {
             vec2 muv2=coverUV(vUv,uTex2Size);
             gl_FragColor=mix(texture2D(uTex1,muv1),texture2D(uTex2,muv2),fade);
           } else {
-            // Desktop: ripple + slide + chromatic aberration
-            float d=uDirection;
-            float p1=smoothstep(0.0,0.5,p);
-            float p2=smoothstep(0.5,1.0,p);
-            uv1+=vec2(0.0,p1*0.08*d);
-            uv2-=vec2(0.0,(1.0-p2)*0.08*d);
-
+            // Desktop: ripple + chromatic aberration (no slide)
             vec2 c=vec2(0.5);
             float dist=length(vUv-c);
             float wave=sin(dist*24.0-p*12.0)*0.05;
@@ -371,17 +190,52 @@ export function Component() {
 
       const canvasEl = canvas;
 
-      canvasEl.style.transform = "scale(1)";
+      // Scroll-driven zoom via CSS transform on canvas
+      let zoomScale = 1;
+      let zoomLastY = window.scrollY;
+
+      const onZoomScroll = () => {
+        if (isAnimating || locked) return;
+        const delta = window.scrollY - zoomLastY;
+        zoomLastY = window.scrollY;
+        if (Math.abs(delta) > 2) {
+          zoomScale = Math.min(1.03, zoomScale + Math.abs(delta) * 0.0003);
+        }
+      };
+      window.addEventListener("scroll", onZoomScroll, { passive: true });
+
+      // Only run zoom on mobile
+      if (isMobile) {
+        let lastAppliedZoom = 1;
+        const zoomTick = () => {
+          requestAnimationFrame(zoomTick);
+          zoomScale += (1.0 - zoomScale) * 0.06;
+          if (zoomScale < 1.001) zoomScale = 1;
+          // Only update DOM when value actually changes
+          if (!isAnimating && zoomScale !== lastAppliedZoom) {
+            canvasEl.style.transform = `scale(${zoomScale})`;
+            lastAppliedZoom = zoomScale;
+          }
+        };
+        zoomTick();
+      }
 
       // --- RENDER ---
       let animating = false;
 
+      let mouseFrozen = false;
+
       const renderLoop = () => {
         if (!animating) return;
         requestAnimationFrame(renderLoop);
-        if (!isMobile) {
-          mouse.sx += (mouse.x - mouse.sx) * 0.05;
-          mouse.sy += (mouse.y - mouse.sy) * 0.05;
+        if (!isMobile && !mouseFrozen) {
+          const dx = mouse.x - mouse.sx;
+          const dy = mouse.y - mouse.sy;
+          // Deadzone — ignore tiny movements
+          if (Math.abs(dx) > 0.01 || Math.abs(dy) > 0.01) {
+            mouse.sx += dx * 0.03;
+            mouse.sy += dy * 0.03;
+          }
           shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
         }
         renderer.render(scene, camera);
@@ -410,13 +264,19 @@ export function Component() {
           const fill = el.querySelector(".slide-progress-fill") as HTMLElement;
           if (fill) { fill.style.width = i === idx ? "100%" : "0%"; }
         });
-        const numEl = document.getElementById("slideNumber");
-        if (numEl) numEl.textContent = String(idx + 1).padStart(2, "0");
+        document.getElementById("slideNumber")!.textContent = String(idx + 1).padStart(2, "0");
 
-        // Switch text content at midpoint
-        setTimeout(() => {
+        // If going TO services (idx 2), show it immediately but fade beam
+        // Panels with custom BGs (2=services, 3=how) show immediately
+        // Others hide first so ripple is visible
+        if (idx === 2 || idx === 3) {
           setActiveSlideRef.current(idx);
-        }, duration * 400);
+        } else {
+          setActiveSlideRef.current(-1);
+          setTimeout(() => {
+            setActiveSlideRef.current(idx);
+          }, duration * 900);
+        }
 
         if (isMobile) {
           if (!textures[idx]) { isAnimating = false; return; }
@@ -427,6 +287,8 @@ export function Component() {
           shaderMat.uniforms.uTex2.value = textures[idx];
           shaderMat.uniforms.uTex2Size.value = textures[idx].userData.size;
 
+          zoomScale = 1;
+          canvasEl.style.transform = "scale(1)";
           startRenderLoop();
 
           gsap.fromTo(shaderMat.uniforms.uProgress, { value: 0 }, {
@@ -435,11 +297,13 @@ export function Component() {
               shaderMat.uniforms.uProgress.value = 0;
               shaderMat.uniforms.uTex1.value = textures[idx];
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
-              // Render final frame and stop loop
+              mouse.sx = mouse.x; mouse.sy = mouse.y;
+              shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
               renderer.render(scene, camera);
               stopRenderLoop();
               currentSlide = idx;
               isAnimating = false;
+              zoomLastY = window.scrollY;
             },
           });
         } else {
@@ -460,6 +324,8 @@ export function Component() {
               shaderMat.uniforms.uTex1Size.value = textures[idx].userData.size;
               currentSlide = idx;
               isAnimating = false;
+              mouse.sx = mouse.x; mouse.sy = mouse.y;
+              shaderMat.uniforms.uMouse.value.set(mouse.sx, mouse.sy);
             },
           });
         }
@@ -482,9 +348,12 @@ export function Component() {
       // Init text
       document.getElementById("mainTitle")!.textContent = SLIDES[0].title;
       document.getElementById("mainDesc")!.textContent = SLIDES[0].description;
+      document.getElementById("slideNumber")!.textContent = "01";
+      document.getElementById("slideTotal")!.textContent = String(SLIDES.length).padStart(2, "0");
 
       // --- SCROLL DRIVEN ---
-      const SECTION_H = () => window.innerHeight * 3;
+      const isMobileDevice = window.innerWidth < 768;
+      const SECTION_H = () => window.innerHeight * (isMobileDevice ? 2 : 3);
 
       let locked = false;
 
@@ -542,18 +411,14 @@ export function Component() {
 
   return (
     <div ref={containerRef} className="lumina-slider-root">
-      <a href="#" className="studio-wordmark">
-        <span className="dot" />
-        Waititi Productions
-        <span className="mark-sub">Est. MMXXIV</span>
-      </a>
-      <span className="studio-location">Los Angeles, California</span>
       {/* Fixed background: canvas + WebGL */}
       <div className="slider-fixed-layer">
         <main className="slider-wrapper">
           <div className="mobile-bg" />
           <div className="mobile-bg-next" />
           <canvas className="webgl-canvas" />
+          <span className="slide-number" id="slideNumber">01</span>
+          <span className="slide-total" id="slideTotal">05</span>
           <div className="slide-content">
             <h1 className="slide-title" id="mainTitle"></h1>
             <p className="slide-description" id="mainDesc"></p>
@@ -568,21 +433,88 @@ export function Component() {
             key={i}
             className={`fixed-slide-panel ${activeSlide === i ? "active" : ""}`}
           >
-            {i === 2 ? (
+            {i === 0 ? (
+              <div className="fixed-slide-text">
+                {/* Desktop: one line, Mobile: two lines */}
+                <div className="hidden sm:block text-center mb-2">
+                  <h1
+                    className="text-6xl md:text-8xl font-bold flex items-center justify-center"
+                    style={{ letterSpacing: "-0.02em", lineHeight: 1.2, paddingBottom: "0.15em" }}
+                  >
+                    <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
+                      Marketing That&nbsp;
+                    </span>
+                    <ParticleTextEffect
+                      key={`desktop-${activeSlide}`}
+                      text="Moves"
+                      colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
+                      width={420}
+                      height={180}
+                      particleDensity={1}
+                      animationForce={55}
+                      className="inline-block cursor-pointer translate-y-1 -ml-12"
+                    />
+                  </h1>
+                </div>
+                <div className="sm:hidden text-center mb-2">
+                  <h1
+                    className="text-4xl font-bold"
+                    style={{ letterSpacing: "-0.02em", lineHeight: 0.9 }}
+                  >
+                    <span className="bg-clip-text text-transparent bg-gradient-to-b from-white to-white/80">
+                      Marketing That
+                    </span>
+                  </h1>
+                  <div className="flex justify-center" style={{ marginTop: "0.2em" }}>
+                    <ParticleTextEffect
+                      key={`mobile-${activeSlide}`}
+                      text="Moves"
+                      colors={["ff6bd6", "c084fc", "60a5fa", "34d399", "fbbf24", "fb7185"]}
+                      width={200}
+                      height={70}
+                      particleDensity={2}
+                      animationForce={55}
+                      className="cursor-pointer"
+                    />
+                  </div>
+                </div>
+                <p className="text-base sm:text-lg md:text-xl text-white/70 mb-8 leading-relaxed font-light tracking-wide max-w-xl mx-auto text-center mt-0">
+                  AI engine. Human direction.<br className="sm:hidden" /> Campaigns live in days.
+                </p>
+              </div>
+            ) : i === 1 ? (
               <ExpandOnHover />
+            ) : i === 2 ? (
+              <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
+                <div className="fixed inset-0 bg-black/30 z-0" />
+                {(activeSlide === 1 || activeSlide === 2 || activeSlide === 3) && <WebGLShaderBg />}
+                <div className="relative z-10">
+                  <ServiceWheel />
+                </div>
+              </div>
             ) : i === 3 ? (
-              <NewsSection />
+              <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
+                {activeSlide === 3 && <GLSLHills speed={0.4} />}
+                <div className="relative z-10">
+                  <HowItWorks />
+                </div>
+              </div>
+            ) : i === 4 ? (
+              <div className="relative w-full h-full flex items-center justify-center" style={{ minHeight: "100vh" }}>
+                {activeSlide === 4 && <HeroWave />}
+                <div className="relative z-10">
+                  <ContactSection />
+                </div>
+              </div>
             ) : (
               <div className="fixed-slide-text">
                 <h2 className="scroll-section-heading">{sl.content.heading}</h2>
-                <p className="scroll-section-text">
-                  {sl.content.body.split("\n").map((line, j, arr) => (
-                    <React.Fragment key={j}>
-                      {line}
-                      {j < arr.length - 1 && <br />}
-                    </React.Fragment>
-                  ))}
-                </p>
+                <p
+                  className="scroll-section-text"
+                  dangerouslySetInnerHTML={{
+                    __html: sl.content.body.replace(/\n/g, "<br />"),
+                  }}
+                />
               </div>
             )}
           </div>

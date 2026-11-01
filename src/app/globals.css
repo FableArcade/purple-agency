@@ -17,6 +17,169 @@
   to { background-position: 0% -1000%; }
 }
 
+/* ===== Service Wheel ===== */
+.sw-container {
+  position: relative;
+  width: 100%;
+  height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sw-center-glow {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.sw-orbit-ring {
+  position: absolute;
+  width: 640px;
+  height: 640px;
+  pointer-events: none;
+}
+
+.sw-node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 5;
+  will-change: transform;
+}
+
+.sw-node.inactive {
+  opacity: 0.5;
+}
+
+/* sw-node-circle removed — liquid glass handles styling */
+
+.sw-node-label {
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.sw-node:hover .sw-node-label,
+.sw-node.active .sw-node-label {
+  color: #fff;
+}
+
+/* Glass dropdown */
+.sw-dropdown {
+  position: absolute;
+  top: 125px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  padding: 8px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    0 16px 48px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: swDropIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes swDropIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.sw-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.sw-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: rgba(0, 0, 0, 0.5);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: center;
+}
+
+.sw-dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: rgba(0, 0, 0, 0.85);
+}
+
+@media (max-width: 768px) {
+  .sw-container {
+    height: 500px;
+  }
+
+
+  .sw-node-label {
+    font-size: 0.6rem;
+  }
+
+  .sw-dropdown {
+    min-width: 160px;
+    top: 85px;
+  }
+
+  /* How It Works — smaller on mobile to fit without scrolling */
+  .fixed-slide-panel:nth-child(4) {
+    align-items: flex-start;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+    overflow: visible;
+  }
+
+  .sw-dropdown-item {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  .sw-orbit-ring {
+    width: 360px;
+    height: 360px;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -333,6 +496,18 @@
   pointer-events: none;
 }
 
+.slider-fixed-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
+  background-size: 150px;
+  mix-blend-mode: overlay;
+  opacity: 0.4;
+}
+
 .slider-wrapper {
   position: relative;
   width: 100%;
@@ -390,6 +565,12 @@
   height: 300vh;
 }
 
+@media (max-width: 768px) {
+  .slider-scroll-section {
+    height: 200vh;
+  }
+}
+
 /* Fixed center content overlay */
 .fixed-slide-content {
   position: fixed;
@@ -424,134 +605,61 @@
   pointer-events: auto;
 }
 
+/* Work section: no blur/scale transition to avoid glass conflict */
+/* Home + Services panels: no blur/scale transition */
+.fixed-slide-panel:nth-child(1),
+.fixed-slide-panel:nth-child(3) {
+  transform: none;
+  filter: none;
+  transition: opacity 0.5s ease;
+}
+
+.fixed-slide-panel:nth-child(1).active,
+.fixed-slide-panel:nth-child(3).active {
+  transform: none;
+  filter: none;
+}
+
 .fixed-slide-text {
-  max-width: 900px;
   width: 100%;
-  padding: 2.5rem;
+  padding: 0 2rem;
   text-align: center;
   box-sizing: border-box;
 }
 
 .scroll-section-label {
-  display: block;
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.55);
-  margin: 0 0 1.25rem 0;
-}
-
-/* Cinematic vignette + bottom gradient for text legibility */
-.slider-fixed-layer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 3;
-  background:
-    radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.32) 70%, rgba(0,0,0,0.45) 100%),
-    linear-gradient(180deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.05) 22%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.4) 100%);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Wordmark */
-.studio-wordmark {
-  position: fixed;
-  bottom: 1.75rem;
-  left: 2rem;
-  z-index: 110;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 1.05rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: rgba(245, 240, 232, 0.95);
-  pointer-events: auto;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-.studio-wordmark .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: #f5f0e8;
-  display: inline-block;
-  transform: translateY(-2px);
-}
-.studio-wordmark .mark-sub {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(245, 240, 232, 0.55);
-  margin-left: 0.6rem;
-}
-
-.studio-location {
-  position: fixed;
-  bottom: 1.75rem;
-  right: 2rem;
-  z-index: 110;
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 0.95rem;
-  font-weight: 400;
-  font-style: italic;
-  letter-spacing: 0.02em;
-  color: rgba(245, 240, 232, 0.65);
-  pointer-events: none;
-}
-
-@media (max-width: 768px) {
-  .studio-wordmark { bottom: 1rem; left: 1rem; font-size: 0.95rem; }
-  .studio-location { bottom: 1rem; right: 1rem; font-size: 0.8rem; }
-  .studio-wordmark .mark-sub { display: none; }
+  display: none;
 }
 
 .scroll-section-heading {
-  font-family: var(--font-display), "Fraunces", "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(2.75rem, 6.5vw, 6rem);
+  font-family: var(--font-heading), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: 400;
-  font-style: italic;
-  font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 0;
   color: #fff;
-  margin: 0 0 1.75rem 0;
-  line-height: 0.95;
-  letter-spacing: -0.025em;
-  white-space: normal;
-  max-width: 18ch;
-  margin-inline: auto;
-  text-wrap: balance;
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4);
+  margin: 0 0 1.5rem 0;
+  line-height: 1.15;
+  text-align: center;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5);
 }
 
 .scroll-section-text {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: clamp(0.95rem, 1.1vw, 1.15rem);
-  font-weight: 400;
-  line-height: 1.65;
-  color: rgba(248, 244, 238, 0.95);
-  margin: 0 auto;
-  width: 100%;
-  max-width: 62ch;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  font-weight: 300;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+  white-space: pre-line;
   text-align: center;
-  white-space: normal;
-  text-wrap: balance;
-  letter-spacing: 0.005em;
-  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.01em;
 }
 
 .slide-number {
   position: absolute;
   top: 2rem;
   right: 2.5rem;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: clamp(10px, 1.2vw, 12px);
   letter-spacing: 0.15em;
   color: rgba(255, 255, 255, 0.5);
@@ -562,7 +670,7 @@
   position: absolute;
   bottom: 2rem;
   right: 2.5rem;
-  font-family: var(--font-geist-mono), monospace;
+  font-family: var(--font-mono), monospace;
   font-size: clamp(10px, 1.2vw, 12px);
   letter-spacing: 0.15em;
   color: rgba(255, 255, 255, 0.3);
@@ -574,24 +682,17 @@
 }
 
 .slide-title {
-  font-family: var(--font-display), Georgia, serif;
+  font-family: var(--font-heading), "Cormorant Garamond", Georgia, serif;
   font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 400;
-  font-style: italic;
-  line-height: 1.0;
+  font-weight: 300;
+  line-height: 1.1;
   color: #fff;
   margin: 0 0 0.75rem 0;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
 .slide-description {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: clamp(0.8rem, 1.2vw, 1rem);
-  font-weight: 400;
-  line-height: 1.6;
-  color: rgba(245, 240, 232, 0.7);
-  margin: 0;
-  white-space: nowrap;
+  display: none;
 }
 
 .slides-navigation {
@@ -604,13 +705,20 @@
   z-index: 100;
   align-items: center;
   pointer-events: auto;
+  background: none;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  padding: 0;
+  border-radius: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .slide-nav-item {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 0.4rem;
   min-width: 80px;
   transition: opacity 0.3s ease;
@@ -637,20 +745,25 @@
 .slide-progress-fill {
   height: 100%;
   width: 0%;
-  background: #f5f0e8;
+  background: #a855f7;
   transition: width 0.1s ease, opacity 0.3s ease;
 }
 
 .slide-nav-title {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  color: rgba(245, 240, 232, 0.85);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: clamp(11px, 1.2vw, 14px);
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
-  font-weight: 500;
   white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
   text-align: center;
-  width: 100%;
+  transition: color 0.3s ease;
+}
+
+.slide-nav-item.active .slide-nav-title {
+  color: rgba(255, 255, 255, 1);
 }
 
 /* ===== Mobile Responsive ===== */
@@ -679,13 +792,16 @@
   }
 
   .scroll-section-heading {
-    font-size: clamp(1.8rem, 8vw, 2.5rem);
-    white-space: normal;
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
   }
 
   .scroll-section-text {
-    font-size: 0.9rem;
-    white-space: normal;
+    font-size: 0.85rem;
+  }
+
+  .fixed-slide-text {
+    max-width: 100%;
+    padding: 1.5rem;
   }
 
   .slide-description {
@@ -693,7 +809,11 @@
     font-size: 0.8rem;
   }
 
-  .slide-number,
+  .slide-number {
+    right: 1rem;
+    top: 4.5rem;
+  }
+
   .slide-total {
     right: 1rem;
   }
